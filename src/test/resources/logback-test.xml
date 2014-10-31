@@ -1,0 +1,24 @@
+<configuration>
+
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+    <!-- To enable JMX Management -->
+    <jmxConfigurator/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%.-1level|%-40.40logger{0}|%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--override to INFO level in all pride -->
+    <logger name="uk.ac.ebi.pride.cluster.search" level="info"/>
+    <logger name="org.springframework.data.solr" level="debug"/>
+
+    <root level="debug">
+        <appender-ref ref="console"/>
+    </root>
+
+</configuration>
