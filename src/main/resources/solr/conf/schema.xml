@@ -97,10 +97,17 @@
            trailing underscores (e.g. _version_) are reserved.
         -->
 
-        <!-- identifier for each document: the spectrum id -->
+        <!-- identifier for each document: the cluster id -->
         <field name="id" type="long" indexed="true" stored="true" required="true" multiValued="false"/>
-        <field name="num_spectra" type="long" indexed="true" stored="true" required="false" multiValued="false"/>
+        <field name="highest_ratio_pep_sequences" type="string" indexed="true" stored="true" required="true" multiValued="true"/>
+        <field name="highest_ratio_protein_accession" type="string" indexed="true" stored="true" required="true" multiValued="true"/>
+        <field name="num_spectra" type="long" indexed="true" stored="true" required="true" multiValued="false"/>
+        <field name="max_ratio" type="double" stored="true" required="true" multiValued="false"/>
+        <field name="cluster_quality" type="qualityLevel" stored="true" required="true" multiValued="false"/>
+        <field name="av_precursor_charge" type="double" stored="true" required="true" multiValued="false"/>
+        <field name="av_precursor_mz" type="double" stored="true" required="true" multiValued="false"/>
 
+        <!--todo species and friends-->
 
         <!-- catchall field, containing all other searchable text fields (implemented
              via copyField further on in this schema  -->
@@ -124,6 +131,8 @@
             EXAMPLE:  name="*_i" will match any field ending in _i (like myid_i, z_i)
             RESTRICTION: the glob-like pattern in the name attribute must have
             a "*" only at the start or the end.  -->
+
+        <dynamicField name="*_project"  type="string" indexed="true"  stored="true"  multiValued="true"/>
 
         <dynamicField name="*_i"  type="int"    indexed="true"  stored="true"/>
         <dynamicField name="*_is" type="int"    indexed="true"  stored="true"  multiValued="true"/>
@@ -157,8 +166,6 @@
 
         <dynamicField name="*_pi"  type="pint"    indexed="true"  stored="true"/>
         <!--<dynamicField name="*_c"   type="currency" indexed="true"  stored="true"/>-->
-
-        <dynamicField name="*_species" type="text_general" indexed="true" stored="true" multiValued="true"/>
 
         <dynamicField name="ignored_*" type="ignored" multiValued="true"/>
         <dynamicField name="attr_*" type="text_general" indexed="true" stored="true" multiValued="true"/>
@@ -218,6 +225,10 @@
              Class names starting with "solr" refer to java classes in a
            standard package such as org.apache.solr.analysis
         -->
+
+        <!--define the quality of the cluster-->
+        <fieldType name="qualityLevel" class="solr.EnumField" enumsConfig="enumsconfig.xml" enumName="clusterQuality"/>
+
 
         <!-- The StrField type is not analyzed, but indexed/stored verbatim. -->
         <fieldType name="string" class="solr.StrField" sortMissingLast="true" />
