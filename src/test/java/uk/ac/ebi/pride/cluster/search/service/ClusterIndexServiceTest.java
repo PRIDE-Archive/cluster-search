@@ -36,6 +36,8 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     private static final String PROJECT2 = "PXT000002";
     private static final String P2_ASSAY1 = "03";
     private static final String P2_ASSAY2 = "04";
+    private static final double AVG_PRECURSOR_MZ = 800.34;
+    private static final double AVG_PRECURSOR_CHARGE = 1.5;
 
 
     @BeforeClass
@@ -92,8 +94,10 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         Collections.addAll(proteinAccs, PROT1, PROT2);
 
         Map<String, List<String>> projectAssays = new HashMap<String, List<String>>();
-        projectAssays.put(PROJECT1, new ArrayList<String>(Arrays.asList(P1_ASSAY1,P1_ASSAY2)));
+        projectAssays.put(PROJECT1, new ArrayList<String>(Arrays.asList(P1_ASSAY1, P1_ASSAY2)));
         projectAssays.put(PROJECT2, new ArrayList<String>(Arrays.asList(P2_ASSAY1, P2_ASSAY2)));
+
+        List<String> projects = new ArrayList<String>(Arrays.asList(PROJECT1,PROJECT2));
 
         Cluster cluster = new Cluster();
         cluster.setClusterId(CLUSTER_ID);
@@ -102,13 +106,14 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         cluster.setHighestRatioProteinAccessions(proteinAccs);
         cluster.setMaxRatio(MAX_RATIO);
         cluster.setNumberOfSpectra(NUM_SPECTRA);
+        cluster.setAvgPrecursorCharge(AVG_PRECURSOR_CHARGE);
+        cluster.setAvgPrecursorMz(AVG_PRECURSOR_MZ);
+        cluster.setProjects(projects);
         cluster.setProjectAssays(projectAssays);
-
         return cluster;
     }
 
     private void checkCluster(Cluster cluster) {
-
 
         List<String> pepSequences = new ArrayList<String>();
         Collections.addAll(pepSequences, PEP1, PEP2);
@@ -119,18 +124,21 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         projectAssays.put(PROJECT1, new ArrayList<String>(Arrays.asList(P1_ASSAY1,P1_ASSAY2)));
         projectAssays.put(PROJECT2, new ArrayList<String>(Arrays.asList(P2_ASSAY1, P2_ASSAY2)));
 
+        List<String> projects = new ArrayList<String>(Arrays.asList(PROJECT1,PROJECT2));
+
         assertNotNull(cluster);
         assertEquals(CLUSTER_ID, cluster.getClusterId());
         assertEquals(MAX_RATIO, cluster.getMaxRatio(), 0);
         assertEquals(NUM_SPECTRA, cluster.getNumberOfSpectra());
         assertEquals(QualityAssigner.calculateQuality(NUM_SPECTRA, MAX_RATIO), cluster.getClusterQuality());
         assertEquals(pepSequences, cluster.getHighestRatioPepSequences());
+        assertEquals(AVG_PRECURSOR_CHARGE, cluster.getAvgPrecursorCharge(),0);
+        assertEquals(AVG_PRECURSOR_MZ, cluster.getAvgPrecursorMz(),0);
         assertEquals(proteinAccs, cluster.getHighestRatioProteinAccessions());
+        assertEquals(projects, cluster.getProjects());
 
-        for (Map.Entry<String, List<String>> s : projectAssays.entrySet()) {
-            for (Map.Entry<String, List<String>> o : cluster.getProjectAssays().entrySet()) {
-                assertEquals(s, o);
-            }
+        for (String key : projectAssays.keySet()) {
+            assertEquals(projectAssays.get(key), cluster.getProjectAssays().get(key));
         }
     }
 

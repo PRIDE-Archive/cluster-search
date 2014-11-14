@@ -99,13 +99,16 @@
 
         <!-- identifier for each document: the cluster id -->
         <field name="id" type="long" indexed="true" stored="true" required="true" multiValued="false"/>
-        <field name="highest_ratio_pep_sequences" type="string" indexed="true" stored="true" required="true" multiValued="true"/>
+        <field name="highest_ratio_pep_sequence" type="string" indexed="true" stored="true" required="true" multiValued="true"/>
         <field name="highest_ratio_protein_accession" type="string" indexed="true" stored="true" required="true" multiValued="true"/>
         <field name="num_spectra" type="long" indexed="true" stored="true" required="true" multiValued="false"/>
         <field name="max_ratio" type="double" stored="true" required="true" multiValued="false"/>
         <field name="cluster_quality" type="qualityLevel" stored="true" required="true" multiValued="false"/>
-        <field name="av_precursor_charge" type="double" stored="true" required="true" multiValued="false"/>
-        <field name="av_precursor_mz" type="double" stored="true" required="true" multiValued="false"/>
+        <field name="cluster_quality_as_text" type="text_general" stored="false" required="true" multiValued="false"/>
+        <field name="avg_precursor_charge" type="double" stored="true" required="true" multiValued="false"/>
+        <field name="avg_precursor_mz" type="double" stored="true" required="true" multiValued="false"/>
+        <field name="project" type="string" stored="true" required="false" multiValued="true"/>
+        <field name="project_assays" type="text_ws" stored="true" required="true" multiValued="true"/>
 
         <!--todo species and friends-->
 
@@ -131,8 +134,6 @@
             EXAMPLE:  name="*_i" will match any field ending in _i (like myid_i, z_i)
             RESTRICTION: the glob-like pattern in the name attribute must have
             a "*" only at the start or the end.  -->
-
-        <dynamicField name="*_project"  type="string" indexed="true"  stored="true"  multiValued="true"/>
 
         <dynamicField name="*_i"  type="int"    indexed="true"  stored="true"/>
         <dynamicField name="*_is" type="int"    indexed="true"  stored="true"  multiValued="true"/>
@@ -206,6 +207,11 @@
           or to add multiple fields to the same field for easier/faster searching.  -->
 
     <copyField source="id" dest="text" />
+    <copyField source="project_assays" dest="text" />
+    <copyField source="cluster_quality" dest="text" />
+    <copyField source="id" dest="text" />
+
+    <copyField source="cluster_quality" dest="cluster_quality_as_text"/>
 
     <!-- Above, multiple source fields are copied to the [text] field.
        Another way to map multiple source fields to the same

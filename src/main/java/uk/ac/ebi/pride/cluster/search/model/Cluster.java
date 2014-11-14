@@ -2,8 +2,7 @@ package uk.ac.ebi.pride.cluster.search.model;
 
 import org.apache.solr.client.solrj.beans.Field;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static uk.ac.ebi.pride.cluster.search.model.ClusterFields.*;
 
@@ -14,26 +13,38 @@ import static uk.ac.ebi.pride.cluster.search.model.ClusterFields.*;
  */
 public class Cluster {
 
+    private static final java.lang.String ASSAYS_DELIMITEER = " ";
     @Field(ID)
-    long clusterId;
+    private long clusterId;
 
     @Field(HIGHEST_RATIO_PEP_SEQUENCE)
-    List<String> highestRatioPepSequences;
+    private List<String> highestRatioPepSequences;
 
     @Field(HIGHEST_RATIO_PROTEIN_ACCESSION)
-    List<String> highestRatioProteinAccessions;
+    private List<String> highestRatioProteinAccessions;
 
     @Field(NUMBER_OF_SPECTRA)
-    long numberOfSpectra;
+    private long numberOfSpectra;
 
     @Field(MAX_RATIO)
-    double maxRatio;
+    private double maxRatio;
 
     @Field(CLUSTER_QUALITY)
-    ClusterQuality clusterQuality;
+    private ClusterQuality clusterQuality;
 
+    @Field(AVG_PRECURSOR_MZ)
+    private double avgPrecursorMz;
+
+    @Field(AVG_PRECURSOR_CHARGE)
+    private double avgPrecursorCharge;
+
+    // Represent the relationship between project and assays ("PXD0000001 1234 2345")
+    // Not visible outside
     @Field(PROJECT_ASSAYS)
-    Map<String, List<String>> projectAssays;
+    private List<String> projectAssaysList;
+
+    @Field(PROJECTS)
+    private List<String> projects;
 
     public long getClusterId() {
         return clusterId;
@@ -83,11 +94,55 @@ public class Cluster {
         this.clusterQuality = clusterQuality;
     }
 
+    public double getAvgPrecursorMz() {
+        return avgPrecursorMz;
+    }
+
+    public void setAvgPrecursorMz(double avgPrecursorMz) {
+        this.avgPrecursorMz = avgPrecursorMz;
+    }
+
+    public double getAvgPrecursorCharge() {
+        return avgPrecursorCharge;
+    }
+
+    public void setAvgPrecursorCharge(double avgPrecursorCharge) {
+        this.avgPrecursorCharge = avgPrecursorCharge;
+    }
+
+    public List<String> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<String> projects) {
+        this.projects = projects;
+    }
+
     public Map<String, List<String>> getProjectAssays() {
+
+        Map<String, List<String>> projectAssays = new TreeMap<String, List<String>>();
+
+        String[] tokens;
+        for (String list : projectAssaysList) {
+            tokens = list.trim().split(ASSAYS_DELIMITEER);
+            if(tokens.length >= 2){
+                projectAssays.put(tokens[0], Arrays.asList(Arrays.copyOfRange(tokens, 1, tokens.length)));
+            }
+        }
+
         return projectAssays;
     }
 
     public void setProjectAssays(Map<String, List<String>> projectAssays) {
-        this.projectAssays = projectAssays;
+        if(projectAssaysList == null ){
+            projectAssaysList = new ArrayList<String>();
+        }
+        for (String projectAccession : projectAssays.keySet()) {
+            StringBuilder stringBuilder = new StringBuilder(projectAccession);
+            for (String assay : projectAssays.get(projectAccession)) {
+                stringBuilder.append(ASSAYS_DELIMITEER).append(assay);
+            }
+            projectAssaysList.add(stringBuilder.toString());
+        }
     }
 }

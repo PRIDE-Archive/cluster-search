@@ -1,9 +1,8 @@
-<?xml version="1.0" ?>
 <enumsConfig>
   <enum name="clusterQuality">
-    <value>Unknown</value>
-    <value>Low</value>
-    <value>Medium</value>
-    <value>High</value>
+    <value>UNKNOWN</value>
+    <value>LOW</value>
+    <value>MEDIUM</value>
+    <value>HIGH</value>
   </enum>
 </enumsConfig>
