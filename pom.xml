@@ -144,7 +144,6 @@
             </exclusions>
         </dependency>
 
-
          <!--logging-->
         <dependency>
             <groupId>org.slf4j</groupId>

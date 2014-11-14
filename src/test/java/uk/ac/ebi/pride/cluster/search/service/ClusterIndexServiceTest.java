@@ -13,14 +13,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.data.solr.core.SolrTemplate;
-import org.springframework.stereotype.Service;
 import uk.ac.ebi.pride.cluster.search.model.Cluster;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepositoryFactory;
 import uk.ac.ebi.pride.cluster.search.util.QualityAssigner;
 
 import java.util.*;
 
-@Service
 public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
 
     private static final long CLUSTER_ID = 1;
@@ -88,9 +86,9 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
 
     private Cluster createCluster() {
 
-        List<String> pepSequences = new ArrayList<String>();
+        Set<String> pepSequences = new HashSet<String>();
         Collections.addAll(pepSequences, PEP1, PEP2);
-        List<String> proteinAccs = new ArrayList<String>();
+        Set<String> proteinAccs = new HashSet<String>();
         Collections.addAll(proteinAccs, PROT1, PROT2);
 
         Map<String, List<String>> projectAssays = new HashMap<String, List<String>>();
@@ -100,14 +98,14 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         List<String> projects = new ArrayList<String>(Arrays.asList(PROJECT1,PROJECT2));
 
         Cluster cluster = new Cluster();
-        cluster.setClusterId(CLUSTER_ID);
+        cluster.setId(CLUSTER_ID);
         cluster.setClusterQuality(QualityAssigner.calculateQuality(NUM_SPECTRA, MAX_RATIO));
         cluster.setHighestRatioPepSequences(pepSequences);
         cluster.setHighestRatioProteinAccessions(proteinAccs);
         cluster.setMaxRatio(MAX_RATIO);
         cluster.setNumberOfSpectra(NUM_SPECTRA);
-        cluster.setAvgPrecursorCharge(AVG_PRECURSOR_CHARGE);
-        cluster.setAvgPrecursorMz(AVG_PRECURSOR_MZ);
+        cluster.setAveragePrecursorCharge(AVG_PRECURSOR_CHARGE);
+        cluster.setAveragePrecursorMz(AVG_PRECURSOR_MZ);
         cluster.setProjects(projects);
         cluster.setProjectAssays(projectAssays);
         return cluster;
@@ -115,9 +113,9 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
 
     private void checkCluster(Cluster cluster) {
 
-        List<String> pepSequences = new ArrayList<String>();
+        Set<String> pepSequences = new HashSet<String>();
         Collections.addAll(pepSequences, PEP1, PEP2);
-        List<String> proteinAccs = new ArrayList<String>();
+        Set<String> proteinAccs = new HashSet<String>();
         Collections.addAll(proteinAccs, PROT1, PROT2);
 
         Map<String, List<String>> projectAssays = new HashMap<String, List<String>>();
@@ -127,13 +125,13 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         List<String> projects = new ArrayList<String>(Arrays.asList(PROJECT1,PROJECT2));
 
         assertNotNull(cluster);
-        assertEquals(CLUSTER_ID, cluster.getClusterId());
+        assertEquals(CLUSTER_ID, cluster.getId());
         assertEquals(MAX_RATIO, cluster.getMaxRatio(), 0);
         assertEquals(NUM_SPECTRA, cluster.getNumberOfSpectra());
         assertEquals(QualityAssigner.calculateQuality(NUM_SPECTRA, MAX_RATIO), cluster.getClusterQuality());
         assertEquals(pepSequences, cluster.getHighestRatioPepSequences());
-        assertEquals(AVG_PRECURSOR_CHARGE, cluster.getAvgPrecursorCharge(),0);
-        assertEquals(AVG_PRECURSOR_MZ, cluster.getAvgPrecursorMz(),0);
+        assertEquals(AVG_PRECURSOR_CHARGE, cluster.getAveragePrecursorCharge(),0);
+        assertEquals(AVG_PRECURSOR_MZ, cluster.getAveragePrecursorMz(),0);
         assertEquals(proteinAccs, cluster.getHighestRatioProteinAccessions());
         assertEquals(projects, cluster.getProjects());
 

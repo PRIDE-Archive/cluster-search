@@ -110,7 +110,13 @@
         <field name="project" type="string" stored="true" required="false" multiValued="true"/>
         <field name="project_assays" type="text_ws" stored="true" required="true" multiValued="true"/>
 
-        <!--todo species and friends-->
+        <!-- species and friends -->
+        <field name="species_names" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
+        <field name="species_accessions" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
+        <field name="species_descendants_accessions" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
+        <field name="species_descendants_names" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
+        <field name="species_as_text" type="text_general" indexed="true" stored="true" required="false" multiValued="true"/>
+        <field name="species_descendants_as_text" type="text_general" indexed="true" required="false" stored="true" multiValued="true"/>
 
         <!-- catchall field, containing all other searchable text fields (implemented
              via copyField further on in this schema  -->
@@ -212,6 +218,9 @@
     <copyField source="id" dest="text" />
 
     <copyField source="cluster_quality" dest="cluster_quality_as_text"/>
+
+    <copyField source="species_names" dest="species_as_text"/>
+    <copyField source="species_descendants_names" dest="species_descendants_as_text"/>
 
     <!-- Above, multiple source fields are copied to the [text] field.
        Another way to map multiple source fields to the same

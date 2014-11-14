@@ -3,6 +3,7 @@ package uk.ac.ebi.pride.cluster.search.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.pride.cluster.search.model.Cluster;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepository;
 
@@ -28,11 +29,13 @@ public class ClusterIndexService {
         this.solrClusterRepository = solrClusterRepository;
     }
 
+    @Transactional
     public void save(Cluster cluster){
         Collection<Cluster> clusterCollection = Collections.singletonList(cluster);
         save(clusterCollection);
     }
 
+    @Transactional
     public void save(Iterable<Cluster> clusters) {
         if (clusters != null && clusters.iterator().hasNext()) {
             solrClusterRepository.save(clusters);
@@ -41,14 +44,17 @@ public class ClusterIndexService {
         }
     }
 
+    @Transactional
     public void deleteAll() {
         solrClusterRepository.deleteAll();
     }
 
+    @Transactional
     public void delete(Cluster cluster){
         solrClusterRepository.delete(cluster);
     }
 
+    @Transactional
     public void delete(Iterable<Cluster> clusters) {
         if (clusters != null && clusters.iterator().hasNext()) {
             solrClusterRepository.delete(clusters);

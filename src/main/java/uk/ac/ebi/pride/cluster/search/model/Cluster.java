@@ -15,13 +15,13 @@ public class Cluster {
 
     private static final java.lang.String ASSAYS_DELIMITEER = " ";
     @Field(ID)
-    private long clusterId;
+    private long id;
 
     @Field(HIGHEST_RATIO_PEP_SEQUENCE)
-    private List<String> highestRatioPepSequences;
+    private Set<String> highestRatioPepSequences;
 
     @Field(HIGHEST_RATIO_PROTEIN_ACCESSION)
-    private List<String> highestRatioProteinAccessions;
+    private Set<String> highestRatioProteinAccessions;
 
     @Field(NUMBER_OF_SPECTRA)
     private long numberOfSpectra;
@@ -33,10 +33,10 @@ public class Cluster {
     private ClusterQuality clusterQuality;
 
     @Field(AVG_PRECURSOR_MZ)
-    private double avgPrecursorMz;
+    private double averagePrecursorMz;
 
     @Field(AVG_PRECURSOR_CHARGE)
-    private double avgPrecursorCharge;
+    private double averagePrecursorCharge;
 
     // Represent the relationship between project and assays ("PXD0000001 1234 2345")
     // Not visible outside
@@ -46,12 +46,12 @@ public class Cluster {
     @Field(PROJECTS)
     private List<String> projects;
 
-    public long getClusterId() {
-        return clusterId;
+    public long getId() {
+        return id;
     }
 
-    public void setClusterId(long clusterId) {
-        this.clusterId = clusterId;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getNumberOfSpectra() {
@@ -62,19 +62,19 @@ public class Cluster {
         this.numberOfSpectra = numberOfSpectra;
     }
 
-    public List<String> getHighestRatioPepSequences() {
+    public Set<String> getHighestRatioPepSequences() {
         return highestRatioPepSequences;
     }
 
-    public void setHighestRatioPepSequences(List<String> highestRatioPepSequences) {
+    public void setHighestRatioPepSequences(Set<String> highestRatioPepSequences) {
         this.highestRatioPepSequences = highestRatioPepSequences;
     }
 
-    public List<String> getHighestRatioProteinAccessions() {
+    public Set<String> getHighestRatioProteinAccessions() {
         return highestRatioProteinAccessions;
     }
 
-    public void setHighestRatioProteinAccessions(List<String> highestRatioProteinAccessions) {
+    public void setHighestRatioProteinAccessions(Set<String> highestRatioProteinAccessions) {
         this.highestRatioProteinAccessions = highestRatioProteinAccessions;
     }
 
@@ -94,20 +94,20 @@ public class Cluster {
         this.clusterQuality = clusterQuality;
     }
 
-    public double getAvgPrecursorMz() {
-        return avgPrecursorMz;
+    public double getAveragePrecursorMz() {
+        return averagePrecursorMz;
     }
 
-    public void setAvgPrecursorMz(double avgPrecursorMz) {
-        this.avgPrecursorMz = avgPrecursorMz;
+    public void setAveragePrecursorMz(double averagePrecursorMz) {
+        this.averagePrecursorMz = averagePrecursorMz;
     }
 
-    public double getAvgPrecursorCharge() {
-        return avgPrecursorCharge;
+    public double getAveragePrecursorCharge() {
+        return averagePrecursorCharge;
     }
 
-    public void setAvgPrecursorCharge(double avgPrecursorCharge) {
-        this.avgPrecursorCharge = avgPrecursorCharge;
+    public void setAveragePrecursorCharge(double averagePrecursorCharge) {
+        this.averagePrecursorCharge = averagePrecursorCharge;
     }
 
     public List<String> getProjects() {
