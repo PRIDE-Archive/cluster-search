@@ -36,7 +36,8 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     private static final String P2_ASSAY2 = "04";
     private static final double AVG_PRECURSOR_MZ = 800.34;
     private static final double AVG_PRECURSOR_CHARGE = 1.5;
-
+    private ClusterIndexService clusterIndexService;
+    private ClusterSearchService clusterSearchService;
 
     @BeforeClass
     public static void initialise() throws Exception {
@@ -46,16 +47,13 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
                 "cluster-index");
     }
 
-    private ClusterIndexService clusterIndexService;
-    private ClusterSearchService clusterSearchService;
-
-
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
         SolrServer server = new EmbeddedSolrServer(h.getCoreContainer(), h.getCore().getName());
         SolrClusterRepositoryFactory solrClusterRepositoryFactory = new SolrClusterRepositoryFactory(new SolrTemplate(server));
+
         clusterIndexService = new ClusterIndexService(solrClusterRepositoryFactory.create());
         clusterSearchService = new ClusterSearchService(solrClusterRepositoryFactory.create());
 
@@ -63,7 +61,6 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         deleteAllData();
 
     }
-
 
     @After
     @Override
@@ -77,7 +74,6 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         clusterIndexService.save(cluster);
 
         checkCluster(clusterSearchService.findById(CLUSTER_ID));
-
     }
 
     private void deleteAllData() {
@@ -95,7 +91,7 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         projectAssays.put(PROJECT1, new ArrayList<String>(Arrays.asList(P1_ASSAY1, P1_ASSAY2)));
         projectAssays.put(PROJECT2, new ArrayList<String>(Arrays.asList(P2_ASSAY1, P2_ASSAY2)));
 
-        List<String> projects = new ArrayList<String>(Arrays.asList(PROJECT1,PROJECT2));
+        List<String> projects = new ArrayList<String>(Arrays.asList(PROJECT1, PROJECT2));
 
         Cluster cluster = new Cluster();
         cluster.setId(CLUSTER_ID);
@@ -119,10 +115,10 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         Collections.addAll(proteinAccs, PROT1, PROT2);
 
         Map<String, List<String>> projectAssays = new HashMap<String, List<String>>();
-        projectAssays.put(PROJECT1, new ArrayList<String>(Arrays.asList(P1_ASSAY1,P1_ASSAY2)));
+        projectAssays.put(PROJECT1, new ArrayList<String>(Arrays.asList(P1_ASSAY1, P1_ASSAY2)));
         projectAssays.put(PROJECT2, new ArrayList<String>(Arrays.asList(P2_ASSAY1, P2_ASSAY2)));
 
-        List<String> projects = new ArrayList<String>(Arrays.asList(PROJECT1,PROJECT2));
+        List<String> projects = new ArrayList<String>(Arrays.asList(PROJECT1, PROJECT2));
 
         assertNotNull(cluster);
         assertEquals(CLUSTER_ID, cluster.getId());
@@ -130,8 +126,8 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         assertEquals(NUM_SPECTRA, cluster.getNumberOfSpectra());
         assertEquals(QualityAssigner.calculateQuality(NUM_SPECTRA, MAX_RATIO), cluster.getClusterQuality());
         assertEquals(pepSequences, cluster.getHighestRatioPepSequences());
-        assertEquals(AVG_PRECURSOR_CHARGE, cluster.getAveragePrecursorCharge(),0);
-        assertEquals(AVG_PRECURSOR_MZ, cluster.getAveragePrecursorMz(),0);
+        assertEquals(AVG_PRECURSOR_CHARGE, cluster.getAveragePrecursorCharge(), 0);
+        assertEquals(AVG_PRECURSOR_MZ, cluster.getAveragePrecursorMz(), 0);
         assertEquals(proteinAccs, cluster.getHighestRatioProteinAccessions());
         assertEquals(projects, cluster.getProjects());
 

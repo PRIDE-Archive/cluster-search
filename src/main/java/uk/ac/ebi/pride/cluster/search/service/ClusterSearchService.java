@@ -10,7 +10,7 @@ import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepository;
  */
 
 @Service
-public class ClusterSearchService {
+public class ClusterSearchService implements IClusterSearchService {
 
     private SolrClusterRepository solrClusterRepository;
 
@@ -23,8 +23,14 @@ public class ClusterSearchService {
     }
 
     // find by accession methods
-    public Cluster findById(Long id) {
-        return solrClusterRepository.findOne(id);
+    @Override
+    public Cluster findById(Long clusterId) {
+        return solrClusterRepository.findOne(clusterId);
+    }
+
+    @Override
+    public boolean existsCluster(Long clusterId){
+        return solrClusterRepository.exists(clusterId);
     }
 
 }

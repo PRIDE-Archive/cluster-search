@@ -14,6 +14,7 @@ import static uk.ac.ebi.pride.cluster.search.model.ClusterFields.*;
 public class Cluster {
 
     private static final java.lang.String ASSAYS_DELIMITEER = " ";
+
     @Field(ID)
     private long id;
 
@@ -45,6 +46,18 @@ public class Cluster {
 
     @Field(PROJECTS)
     private List<String> projects;
+
+    @Field(SPECIES_NAMES)
+    private List<String> speciesNames;
+
+    @Field(SPECIES_ACCESSIONS)
+    private List<String> speciesAccessions;
+
+    @Field(SPECIES_ASCENDANTS_NAMES)
+    private List<String> speciesAscendantsNames;
+
+    @Field(SPECIES_ASCENDANTS_ACCESSIONS)
+    private List<String> speciesAscendantsAccessions;
 
     public long getId() {
         return id;
@@ -144,5 +157,37 @@ public class Cluster {
             }
             projectAssaysList.add(stringBuilder.toString());
         }
+    }
+
+    public List<String> getSpeciesNames() {
+        return speciesNames;
+    }
+
+    public void setSpeciesNames(List<String> speciesNames) {
+        this.speciesNames = speciesNames;
+    }
+
+    public List<String> getSpeciesAccessions() {
+        return speciesAccessions;
+    }
+
+    public void setSpeciesAccessions(List<String> speciesAccessions) {
+        this.speciesAccessions = speciesAccessions;
+    }
+
+    public List<String> getSpeciesAscendantsNames() {
+        return speciesAscendantsNames;
+    }
+
+    public void setSpeciesAscendantsNames(List<String> speciesAscendantsNames) {
+        this.speciesAscendantsNames = speciesAscendantsNames;
+    }
+
+    public List<String> getSpeciesAscendantsAccessions() {
+        return speciesAscendantsAccessions;
+    }
+
+    public void setSpeciesAscendantsAccessions(List<String> speciesAscendantsAccessions) {
+        this.speciesAscendantsAccessions = speciesAscendantsAccessions;
     }
 }
