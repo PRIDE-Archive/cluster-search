@@ -5,7 +5,7 @@ import uk.ac.ebi.pride.cluster.search.model.Cluster;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepository;
 
 /**
- * Created by jdianes on 04/11/2014.
+ * @author Jose A Dianes <jdianes@ebi.ac.uk>
  * @author ntoro
  */
 
