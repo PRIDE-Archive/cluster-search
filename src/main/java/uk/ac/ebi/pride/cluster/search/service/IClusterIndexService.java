@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.cluster.search.service;
 
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.pride.cluster.search.model.Cluster;
+import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
 
 import java.util.List;
 
@@ -14,22 +14,22 @@ import java.util.List;
 public interface IClusterIndexService {
 
     @Transactional
-    void save(Cluster cluster);
+    void save(SolrCluster cluster);
 
     @Transactional
-    void save(Iterable<Cluster> clusters);
+    void save(Iterable<SolrCluster> clusters);
 
     @Transactional
     void delete(long clusterId);
 
     @Transactional
-    void delete(Cluster cluster);
+    void delete(SolrCluster cluster);
 
     @Transactional
     void delete(List<Long> clusterIds);
 
     @Transactional
-    void delete(Iterable<Cluster> clusters);
+    void delete(Iterable<SolrCluster> clusters);
 
     @Transactional
     void deleteAll();

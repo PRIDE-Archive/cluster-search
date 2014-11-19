@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.ebi.pride.cluster.search.model.Cluster;
+import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepository;
 
 import java.util.Collection;
@@ -33,14 +33,14 @@ public class ClusterIndexService implements IClusterIndexService {
 
     @Override
     @Transactional
-    public void save(Cluster cluster) {
-        Collection<Cluster> clusterCollection = Collections.singletonList(cluster);
+    public void save(SolrCluster cluster) {
+        Collection<SolrCluster> clusterCollection = Collections.singletonList(cluster);
         save(clusterCollection);
     }
 
     @Override
     @Transactional
-    public void save(Iterable<Cluster> clusters) {
+    public void save(Iterable<SolrCluster> clusters) {
         if (clusters != null && clusters.iterator().hasNext()) {
             solrClusterRepository.save(clusters);
         } else {
@@ -56,7 +56,7 @@ public class ClusterIndexService implements IClusterIndexService {
 
     @Override
     @Transactional
-    public void delete(Cluster cluster) {
+    public void delete(SolrCluster cluster) {
         if(cluster != null){
             solrClusterRepository.delete(cluster);
         }  else {
@@ -67,13 +67,13 @@ public class ClusterIndexService implements IClusterIndexService {
     @Override
     @Transactional
     public void delete(List<Long> clusterIds) {
-        Iterable<Cluster> clusters = solrClusterRepository.findAll(clusterIds);
+        Iterable<SolrCluster> clusters = solrClusterRepository.findAll(clusterIds);
         delete(clusters);
     }
 
     @Override
     @Transactional
-    public void delete(Iterable<Cluster> clusters) {
+    public void delete(Iterable<SolrCluster> clusters) {
         if (clusters != null && clusters.iterator().hasNext()) {
             solrClusterRepository.delete(clusters);
         } else {

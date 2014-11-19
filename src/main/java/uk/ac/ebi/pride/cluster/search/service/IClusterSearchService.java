@@ -1,16 +1,23 @@
 package uk.ac.ebi.pride.cluster.search.service;
 
-import uk.ac.ebi.pride.cluster.search.model.Cluster;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
+
+import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
- * User: noedelta
- * Date: 15/11/14
- * Time: 13:23
+ * @author ntoro
+ * @author Jose A. Dianes <jdianes@ebi.ac.uk>
+ *
  */
 public interface IClusterSearchService {
-    // find by accession methods
-    Cluster findById(Long id);
+
+    Page<SolrCluster> findAll(Pageable pageable);
+
+    SolrCluster findById(Long id);
+
+    Page<SolrCluster> findByHighestRatioPepSequences(Set<String> sequences, Pageable pageable);
 
     boolean existsCluster(Long clusterId);
 }

@@ -13,7 +13,7 @@
 
     <groupId>uk.ac.ebi.pride.cluster</groupId>
     <artifactId>cluster-search</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <name>cluster-search</name>
 
 

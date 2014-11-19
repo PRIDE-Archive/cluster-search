@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.data.solr.core.SolrTemplate;
-import uk.ac.ebi.pride.cluster.search.model.Cluster;
+import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepositoryFactory;
 import uk.ac.ebi.pride.cluster.search.util.QualityAssigner;
 
@@ -70,7 +70,7 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
 
     @Test
     public void testSave() throws Exception {
-        Cluster cluster = createCluster();
+        SolrCluster cluster = createCluster();
         clusterIndexService.save(cluster);
 
         checkCluster(clusterSearchService.findById(CLUSTER_ID));
@@ -80,7 +80,7 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         clusterIndexService.deleteAll();
     }
 
-    private Cluster createCluster() {
+    private SolrCluster createCluster() {
 
         Set<String> pepSequences = new HashSet<String>();
         Collections.addAll(pepSequences, PEP1, PEP2);
@@ -93,7 +93,7 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
 
         List<String> projects = new ArrayList<String>(Arrays.asList(PROJECT1, PROJECT2));
 
-        Cluster cluster = new Cluster();
+        SolrCluster cluster = new SolrCluster();
         cluster.setId(CLUSTER_ID);
         cluster.setClusterQuality(QualityAssigner.calculateQuality(NUM_SPECTRA, MAX_RATIO));
         cluster.setHighestRatioPepSequences(pepSequences);
@@ -107,7 +107,7 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         return cluster;
     }
 
-    private void checkCluster(Cluster cluster) {
+    private void checkCluster(SolrCluster cluster) {
 
         Set<String> pepSequences = new HashSet<String>();
         Collections.addAll(pepSequences, PEP1, PEP2);

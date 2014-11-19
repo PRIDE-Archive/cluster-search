@@ -11,7 +11,7 @@ import static uk.ac.ebi.pride.cluster.search.model.ClusterFields.*;
  * @author Jose A. Dianes <jdianes@ebi.ac.uk>
  *
  */
-public class Cluster {
+public class SolrCluster {
 
     private static final java.lang.String ASSAYS_DELIMITEER = " ";
 
