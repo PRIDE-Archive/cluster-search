@@ -11,7 +11,7 @@ import java.util.Set;
 
 /**
  * @author ntoro
- * @author Jose A. Dianes <jdianes@ebi.ac.uk>
+ * @author Jose A. Dianes <jadianes@gmail.com>
  *
  */
 

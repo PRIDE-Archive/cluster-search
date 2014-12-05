@@ -1,7 +1,7 @@
 package uk.ac.ebi.pride.cluster.search.model;
 
 /**
- * @author Jose A. Dianes <jdianes@ebi.ac.uk>
+ * @author Jose A. Dianes <jadianes@gmail.com>
  * @author ntoro
  *
  */

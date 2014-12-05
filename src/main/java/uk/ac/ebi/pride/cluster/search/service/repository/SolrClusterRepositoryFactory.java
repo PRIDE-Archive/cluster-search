@@ -4,7 +4,7 @@ import org.springframework.data.solr.core.SolrOperations;
 import org.springframework.data.solr.repository.support.SolrRepositoryFactory;
 
 /**
- * @author Jose A. Dianes <jdianes@ebi.ac.uk>
+ * @author Jose A. Dianes <jadianes@gmail.com>
  *
  */
 public class SolrClusterRepositoryFactory {
