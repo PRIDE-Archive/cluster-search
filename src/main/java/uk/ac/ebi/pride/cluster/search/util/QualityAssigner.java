@@ -13,7 +13,7 @@ public class QualityAssigner {
         ClusterQuality quality = ClusterQuality.UNKNOWN;
 
         if (maxRatio >= 0.7){
-            if (numSpectra > 10) {
+            if (numSpectra >= 10) {
                 quality = ClusterQuality.HIGH;
             } else {
                 quality = ClusterQuality.MEDIUM;
