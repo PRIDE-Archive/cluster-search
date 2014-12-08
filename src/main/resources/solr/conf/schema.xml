@@ -110,6 +110,10 @@
         <field name="projects" type="string" stored="true" required="false" multiValued="true"/>
         <field name="project_assays" type="text_ws" stored="true" required="true" multiValued="true"/>
 
+        <!--Consensus spectra-->
+        <field name="consensus_spectrum_mz" type="double" indexed="false" stored="true" required="false" multiValued="true"/>
+        <field name="consensus_spectrum_intensity" type="double" indexed="false" stored="true" required="false" multiValued="true"/>
+
         <!-- species and friends -->
         <field name="species_names" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
         <field name="species_accessions" type="string" indexed="true" stored="true" required="false" multiValued="true"/>

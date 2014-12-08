@@ -59,6 +59,12 @@ public class SolrCluster {
     @Field(SPECIES_ASCENDANTS_ACCESSIONS)
     private List<String> speciesAscendantsAccessions;
 
+    @Field(CONSENSUS_SPECTRUM_MZ)
+    private List<Double> consensusSpectrumMz;
+
+    @Field(CONSENSUS_SPECTRUM_INTENSITY)
+    private List<Double> consensusSpectrumIntensity;
+
     public long getId() {
         return id;
     }
@@ -189,5 +195,21 @@ public class SolrCluster {
 
     public void setSpeciesAscendantsAccessions(List<String> speciesAscendantsAccessions) {
         this.speciesAscendantsAccessions = speciesAscendantsAccessions;
+    }
+
+    public List<Double> getConsensusSpectrumMz() {
+        return consensusSpectrumMz;
+    }
+
+    public void setConsensusSpectrumMz(List<Double> consensusSpectrumMz) {
+        this.consensusSpectrumMz = consensusSpectrumMz;
+    }
+
+    public List<Double> getConsensusSpectrumIntensity() {
+        return consensusSpectrumIntensity;
+    }
+
+    public void setConsensusSpectrumIntensity(List<Double> consensusSpectrumIntensity) {
+        this.consensusSpectrumIntensity = consensusSpectrumIntensity;
     }
 }

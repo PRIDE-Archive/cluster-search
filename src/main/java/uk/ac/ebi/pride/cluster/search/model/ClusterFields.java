@@ -23,4 +23,6 @@ public class ClusterFields {
     public static final String SPECIES_ASCENDANTS_ACCESSIONS = "species_ascendants_accessions";
     public static final String SPECIES_NAMES_AS_TEXT = "species_as_text";
     public static final String SPECIES_ASCENDANTS_NAMES_AS_TEXT = "species_ascendants_as_text";
+    public static final String CONSENSUS_SPECTRUM_MZ = "consensus_spectrum_mz";
+    public static final String CONSENSUS_SPECTRUM_INTENSITY = "consensus_spectrum_intensity";
 }
