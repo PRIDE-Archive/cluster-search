@@ -62,8 +62,31 @@ public class SolrCluster {
     @Field(CONSENSUS_SPECTRUM_MZ)
     private List<Double> consensusSpectrumMz;
 
+    @Field(CONSENSUS_SPECTRUM_MZ_MEAN)
+    private double consensusSpectrumMzMean;
+
+
+    @Field(CONSENSUS_SPECTRUM_MZ_SEM)
+    private double consensusSpectrumMzSem;
+
     @Field(CONSENSUS_SPECTRUM_INTENSITY)
     private List<Double> consensusSpectrumIntensity;
+
+    @Field(CONSENSUS_SPECTRUM_INTENSITY_MEAN_1)
+    private double consensusSpectrumIntensityMean1;
+
+    @Field(CONSENSUS_SPECTRUM_INTENSITY_MEAN_2)
+    private double consensusSpectrumIntensityMean2;
+
+    @Field(CONSENSUS_SPECTRUM_INTENSITY_MEAN_3)
+    private double consensusSpectrumIntensityMean3;
+
+    @Field(CONSENSUS_SPECTRUM_INTENSITY_MEAN_4)
+    private double consensusSpectrumIntensityMean4;
+
+    @Field(CONSENSUS_SPECTRUM_INTENSITY_SEM)
+    private double consensusSpectrumIntensitySem;
+
 
     public long getId() {
         return id;
@@ -205,11 +228,68 @@ public class SolrCluster {
         this.consensusSpectrumMz = consensusSpectrumMz;
     }
 
+    public double getConsensusSpectrumMzMean() {
+        return consensusSpectrumMzMean;
+    }
+
+    public void setConsensusSpectrumMzMean(double consensusSpectrumMzMean) {
+        this.consensusSpectrumMzMean = consensusSpectrumMzMean;
+    }
+
+
+    public double getConsensusSpectrumMzSem() {
+        return consensusSpectrumMzSem;
+    }
+
+    public void setConsensusSpectrumMzSem(double consensusSpectrumMzSem) {
+        this.consensusSpectrumMzSem = consensusSpectrumMzSem;
+    }
+
     public List<Double> getConsensusSpectrumIntensity() {
         return consensusSpectrumIntensity;
     }
 
     public void setConsensusSpectrumIntensity(List<Double> consensusSpectrumIntensity) {
         this.consensusSpectrumIntensity = consensusSpectrumIntensity;
+    }
+
+    public double getConsensusSpectrumIntensityMean1() {
+        return consensusSpectrumIntensityMean1;
+    }
+
+    public void setConsensusSpectrumIntensityMean1(double consensusSpectrumIntensityMean1) {
+        this.consensusSpectrumIntensityMean1 = consensusSpectrumIntensityMean1;
+    }
+
+    public double getConsensusSpectrumIntensityMean2() {
+        return consensusSpectrumIntensityMean2;
+    }
+
+    public void setConsensusSpectrumIntensityMean2(double consensusSpectrumIntensityMean2) {
+        this.consensusSpectrumIntensityMean2 = consensusSpectrumIntensityMean2;
+    }
+
+    public double getConsensusSpectrumIntensityMean3() {
+        return consensusSpectrumIntensityMean3;
+    }
+
+    public void setConsensusSpectrumIntensityMean3(double consensusSpectrumIntensityMean3) {
+        this.consensusSpectrumIntensityMean3 = consensusSpectrumIntensityMean3;
+    }
+
+    public double getConsensusSpectrumIntensityMean4() {
+        return consensusSpectrumIntensityMean4;
+    }
+
+    public void setConsensusSpectrumIntensityMean4(double consensusSpectrumIntensityMean4) {
+        this.consensusSpectrumIntensityMean4 = consensusSpectrumIntensityMean4;
+    }
+
+    public double getConsensusSpectrumIntensitySem() {
+        return consensusSpectrumIntensitySem;
+    }
+
+    public void setConsensusSpectrumIntensitySem(double consensusSpectrumIntensitySem) {
+        this.consensusSpectrumIntensitySem = consensusSpectrumIntensitySem;
     }
 }
