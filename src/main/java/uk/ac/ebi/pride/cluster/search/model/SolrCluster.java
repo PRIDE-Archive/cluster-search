@@ -62,9 +62,17 @@ public class SolrCluster {
     @Field(CONSENSUS_SPECTRUM_MZ)
     private List<Double> consensusSpectrumMz;
 
-    @Field(CONSENSUS_SPECTRUM_MZ_MEAN)
-    private double consensusSpectrumMzMean;
+    @Field(CONSENSUS_SPECTRUM_MZ_MEAN_1)
+    private double consensusSpectrumMzMean1;
 
+    @Field(CONSENSUS_SPECTRUM_MZ_MEAN_2)
+    private double consensusSpectrumMzMean2;
+
+    @Field(CONSENSUS_SPECTRUM_MZ_MEAN_3)
+    private double consensusSpectrumMzMean3;
+
+    @Field(CONSENSUS_SPECTRUM_MZ_MEAN_4)
+    private double consensusSpectrumMzMean4;
 
     @Field(CONSENSUS_SPECTRUM_MZ_SEM)
     private double consensusSpectrumMzSem;
@@ -228,14 +236,37 @@ public class SolrCluster {
         this.consensusSpectrumMz = consensusSpectrumMz;
     }
 
-    public double getConsensusSpectrumMzMean() {
-        return consensusSpectrumMzMean;
+    public double getConsensusSpectrumMzMean1() {
+        return consensusSpectrumMzMean1;
     }
 
-    public void setConsensusSpectrumMzMean(double consensusSpectrumMzMean) {
-        this.consensusSpectrumMzMean = consensusSpectrumMzMean;
+    public void setConsensusSpectrumMzMean1(double consensusSpectrumMzMean) {
+        this.consensusSpectrumMzMean1 = consensusSpectrumMzMean;
     }
 
+    public double getConsensusSpectrumMzMean2() {
+        return consensusSpectrumMzMean2;
+    }
+
+    public void setConsensusSpectrumMzMean2(double consensusSpectrumMzMean2) {
+        this.consensusSpectrumMzMean2 = consensusSpectrumMzMean2;
+    }
+
+    public double getConsensusSpectrumMzMean3() {
+        return consensusSpectrumMzMean3;
+    }
+
+    public void setConsensusSpectrumMzMean3(double consensusSpectrumMzMean3) {
+        this.consensusSpectrumMzMean3 = consensusSpectrumMzMean3;
+    }
+
+    public double getConsensusSpectrumMzMean4() {
+        return consensusSpectrumMzMean4;
+    }
+
+    public void setConsensusSpectrumMzMean4(double consensusSpectrumMzMean4) {
+        this.consensusSpectrumMzMean4 = consensusSpectrumMzMean4;
+    }
 
     public double getConsensusSpectrumMzSem() {
         return consensusSpectrumMzSem;

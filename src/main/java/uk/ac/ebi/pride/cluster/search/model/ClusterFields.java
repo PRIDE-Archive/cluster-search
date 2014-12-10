@@ -24,7 +24,10 @@ public class ClusterFields {
     public static final String SPECIES_NAMES_AS_TEXT = "species_as_text";
     public static final String SPECIES_ASCENDANTS_NAMES_AS_TEXT = "species_ascendants_as_text";
     public static final String CONSENSUS_SPECTRUM_MZ = "consensus_spectrum_mz";
-    public static final String CONSENSUS_SPECTRUM_MZ_MEAN = "consensus_spectrum_mz_mean";
+    public static final String CONSENSUS_SPECTRUM_MZ_MEAN_1 = "consensus_spectrum_mz_mean_1";
+    public static final String CONSENSUS_SPECTRUM_MZ_MEAN_2 = "consensus_spectrum_mz_mean_2";
+    public static final String CONSENSUS_SPECTRUM_MZ_MEAN_3 = "consensus_spectrum_mz_mean_3";
+    public static final String CONSENSUS_SPECTRUM_MZ_MEAN_4 = "consensus_spectrum_mz_mean_4";
     public static final String CONSENSUS_SPECTRUM_MZ_SEM = "consensus_spectrum_mz_sem";
     public static final String CONSENSUS_SPECTRUM_INTENSITY = "consensus_spectrum_intensity";
     public static final String CONSENSUS_SPECTRUM_INTENSITY_MEAN_1 = "consensus_spectrum_intensity_mean_1";

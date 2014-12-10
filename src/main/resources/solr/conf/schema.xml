@@ -113,12 +113,9 @@
         <!--Consensus spectra-->
         <field name="consensus_spectrum_mz" type="double" indexed="false" stored="true" required="false" multiValued="true"/>
         <field name="consensus_spectrum_intensity" type="double" indexed="false" stored="true" required="false" multiValued="true"/>
-        <field name="consensus_spectrum_mz_mean" type="double" indexed="true" stored="true" required="false"/>
+        <dynamicField name="consensus_spectrum_mz_mean_*"  type="double" indexed="true"  stored="true"/>
         <field name="consensus_spectrum_mz_sem" type="double" indexed="true" stored="true" required="false"/>
-        <field name="consensus_spectrum_intensity_mean_1" type="double" indexed="true" stored="true" required="false"/>
-        <field name="consensus_spectrum_intensity_mean_2" type="double" indexed="true" stored="true" required="false"/>
-        <field name="consensus_spectrum_intensity_mean_3" type="double" indexed="true" stored="true" required="false"/>
-        <field name="consensus_spectrum_intensity_mean_4" type="double" indexed="true" stored="true" required="false"/>
+        <dynamicField name="consensus_spectrum_intensity_mean_*"  type="double" indexed="true"  stored="true"/>
         <field name="consensus_spectrum_intensity_sem" type="double" indexed="true" stored="true" required="false"/>
 
 
@@ -152,6 +149,7 @@
             EXAMPLE:  name="*_i" will match any field ending in _i (like myid_i, z_i)
             RESTRICTION: the glob-like pattern in the name attribute must have
             a "*" only at the start or the end.  -->
+
 
         <dynamicField name="*_i"  type="int"    indexed="true"  stored="true"/>
         <dynamicField name="*_is" type="int"    indexed="true"  stored="true"  multiValued="true"/>
