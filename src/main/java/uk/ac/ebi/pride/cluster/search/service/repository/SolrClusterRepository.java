@@ -24,4 +24,7 @@ public interface SolrClusterRepository extends SolrCrudRepository<SolrCluster, L
     Page<SolrCluster> findByHighestRatioPepSequences(Set<String> sequences, Pageable pageable);
 
 
+//    @Query(boost = { "div(1,sqedst(?0,?1,consensus_spectrum_mz_mean_1:, consensus_spectrum_intensity_mean_1))"})
+//    Page<SolrCluster> findByNearestPeaks(double mz1, double intensity1, Pageable pageable);
+
 }

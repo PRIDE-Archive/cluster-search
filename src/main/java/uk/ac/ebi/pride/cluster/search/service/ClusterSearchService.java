@@ -1,10 +1,12 @@
 package uk.ac.ebi.pride.cluster.search.service;
 
+import org.apache.solr.client.solrj.SolrServer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepository;
+import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterSpectralSearchRepository;
 
 import java.util.Set;
 
@@ -17,13 +19,11 @@ import java.util.Set;
 public class ClusterSearchService implements IClusterSearchService {
 
     private SolrClusterRepository solrClusterRepository;
+    private SolrClusterSpectralSearchRepository solrClusterSpectralSearchRepository;
 
-    public ClusterSearchService(SolrClusterRepository solrClusterRepository) {
+    public ClusterSearchService(SolrClusterRepository solrClusterRepository, SolrClusterSpectralSearchRepository solrClusterSpectralSearchRepository) {
         this.solrClusterRepository = solrClusterRepository;
-    }
-
-    public void setSolrClusterRepository(SolrClusterRepository solrClusterRepository) {
-        this.solrClusterRepository = solrClusterRepository;
+        this.solrClusterSpectralSearchRepository = solrClusterSpectralSearchRepository;
     }
 
     @Override
@@ -39,6 +39,11 @@ public class ClusterSearchService implements IClusterSearchService {
     @Override
     public Page<SolrCluster> findByHighestRatioPepSequences(Set<String> sequences, Pageable pageable) {
         return solrClusterRepository.findByHighestRatioPepSequences(sequences, pageable);
+    }
+
+    @Override
+    public Page<SolrCluster> findByNearestPeaks(double mz1, double intensity1, Pageable pageable) {
+        return solrClusterSpectralSearchRepository.findByNearestPeaks(mz1, intensity1, pageable);
     }
 
 

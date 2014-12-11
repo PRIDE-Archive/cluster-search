@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.cluster.search.service;
 
 /**
  * @author ntoro
+ * @author Jose A. Dianes
  * @version $Id$
  */
 
@@ -12,9 +13,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.solr.core.SolrTemplate;
 import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepositoryFactory;
+import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterSpectralSearchRepository;
 import uk.ac.ebi.pride.cluster.search.util.QualityAssigner;
 
 import java.util.*;
@@ -36,6 +40,8 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     private static final String P2_ASSAY2 = "04";
     private static final double AVG_PRECURSOR_MZ = 800.34;
     private static final double AVG_PRECURSOR_CHARGE = 1.5;
+    private static final double TEST_INTENSITY_MEAN_1 = 100.0;
+    private static final double TEST_MZ_MEAN_1 = 1000.0;
     private ClusterIndexService clusterIndexService;
     private ClusterSearchService clusterSearchService;
 
@@ -55,7 +61,7 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         SolrClusterRepositoryFactory solrClusterRepositoryFactory = new SolrClusterRepositoryFactory(new SolrTemplate(server));
 
         clusterIndexService = new ClusterIndexService(solrClusterRepositoryFactory.create());
-        clusterSearchService = new ClusterSearchService(solrClusterRepositoryFactory.create());
+        clusterSearchService = new ClusterSearchService(solrClusterRepositoryFactory.create(), new SolrClusterSpectralSearchRepository(server));
 
         // delete all data
         deleteAllData();
@@ -74,6 +80,16 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         clusterIndexService.save(cluster);
 
         checkCluster(clusterSearchService.findById(CLUSTER_ID));
+    }
+
+    @Test
+    public void testFindByNearestPeaks() {
+        SolrCluster cluster = createCluster();
+        clusterIndexService.save(cluster);
+
+        Page<SolrCluster> res = clusterSearchService.findByNearestPeaks(TEST_MZ_MEAN_1, TEST_INTENSITY_MEAN_1, new PageRequest(0, 1));
+        assertNotNull(res);
+        checkCluster( res.getContent().get(0) );
     }
 
     private void deleteAllData() {
@@ -104,6 +120,8 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         cluster.setAveragePrecursorMz(AVG_PRECURSOR_MZ);
         cluster.setProjects(projects);
         cluster.setProjectAssays(projectAssays);
+        cluster.setConsensusSpectrumIntensityMean1(TEST_INTENSITY_MEAN_1);
+        cluster.setConsensusSpectrumMzMean1(TEST_MZ_MEAN_1);
         return cluster;
     }
 
