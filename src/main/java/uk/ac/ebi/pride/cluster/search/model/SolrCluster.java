@@ -137,12 +137,12 @@ public class SolrCluster {
         this.maxRatio = maxRatio;
     }
 
-    public String getClusterQuality() {
-        return clusterQuality;
+    public ClusterQuality getClusterQuality() {
+        return ClusterQuality.valueOf(clusterQuality);
     }
 
-    public void setClusterQuality(String clusterQuality) {
-        this.clusterQuality = clusterQuality;
+    public void setClusterQuality(ClusterQuality clusterQuality) {
+        this.clusterQuality = clusterQuality.toString();
     }
 
     public double getAveragePrecursorMz() {
@@ -237,36 +237,24 @@ public class SolrCluster {
         this.consensusSpectrumMz = consensusSpectrumMz;
     }
 
-    public double getConsensusSpectrumMzMean1() {
-        return consensusSpectrumMzMean1;
+    public double[] getConsensusSpectrumMzMeans() {
+        double[] consensusSpectrumMzMeans = new double[NUM_LOW_RES_PEAKS];
+
+        consensusSpectrumMzMeans[0] = this.consensusSpectrumMzMean1;
+        consensusSpectrumMzMeans[1] = this.consensusSpectrumMzMean2;
+        consensusSpectrumMzMeans[2] = this.consensusSpectrumMzMean3;
+        consensusSpectrumMzMeans[3] = this.consensusSpectrumMzMean4;
+
+        return consensusSpectrumMzMeans;
     }
 
-    public void setConsensusSpectrumMzMean1(double consensusSpectrumMzMean) {
-        this.consensusSpectrumMzMean1 = consensusSpectrumMzMean;
-    }
-
-    public double getConsensusSpectrumMzMean2() {
-        return consensusSpectrumMzMean2;
-    }
-
-    public void setConsensusSpectrumMzMean2(double consensusSpectrumMzMean2) {
-        this.consensusSpectrumMzMean2 = consensusSpectrumMzMean2;
-    }
-
-    public double getConsensusSpectrumMzMean3() {
-        return consensusSpectrumMzMean3;
-    }
-
-    public void setConsensusSpectrumMzMean3(double consensusSpectrumMzMean3) {
-        this.consensusSpectrumMzMean3 = consensusSpectrumMzMean3;
-    }
-
-    public double getConsensusSpectrumMzMean4() {
-        return consensusSpectrumMzMean4;
-    }
-
-    public void setConsensusSpectrumMzMean4(double consensusSpectrumMzMean4) {
-        this.consensusSpectrumMzMean4 = consensusSpectrumMzMean4;
+    public void setConsensusSpectrumMzMeans(double[] consensusSpectrumMzMeans) {
+        if (consensusSpectrumMzMeans != null) {
+            this.consensusSpectrumMzMean1 = consensusSpectrumMzMeans[0];
+            this.consensusSpectrumMzMean2 = consensusSpectrumMzMeans[1];
+            this.consensusSpectrumMzMean3 = consensusSpectrumMzMeans[2];
+            this.consensusSpectrumMzMean4 = consensusSpectrumMzMeans[3];
+        }
     }
 
     public double getConsensusSpectrumMzSem() {
@@ -305,24 +293,11 @@ public class SolrCluster {
         }
     }
 
-    public double[] getConsensusSpectrumMzMeans() {
-        double[] consensusSpectrumMzMeans = new double[NUM_LOW_RES_PEAKS];
-
-        consensusSpectrumMzMeans[0] = this.consensusSpectrumMzMean1;
-        consensusSpectrumMzMeans[1] = this.consensusSpectrumMzMean2;
-        consensusSpectrumMzMeans[2] = this.consensusSpectrumMzMean3;
-        consensusSpectrumMzMeans[3] = this.consensusSpectrumMzMean4;
-
-        return consensusSpectrumMzMeans;
+    public double getConsensusSpectrumIntensitySem() {
+        return consensusSpectrumIntensitySem;
     }
 
-    public void setConsensusSpectrumMzMeans(double[] consensusSpectrumMzMeans) {
-        if (consensusSpectrumMzMeans != null) {
-            this.consensusSpectrumMzMean1 = consensusSpectrumMzMeans[0];
-            this.consensusSpectrumMzMean2 = consensusSpectrumMzMeans[1];
-            this.consensusSpectrumMzMean3 = consensusSpectrumMzMeans[2];
-            this.consensusSpectrumMzMean4 = consensusSpectrumMzMeans[3];
-        }
+    public void setConsensusSpectrumIntensitySem(double consensusSpectrumIntensitySem) {
+        this.consensusSpectrumIntensitySem = consensusSpectrumIntensitySem;
     }
-
 }
