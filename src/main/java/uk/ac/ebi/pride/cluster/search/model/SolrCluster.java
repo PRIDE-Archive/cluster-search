@@ -14,7 +14,6 @@ import static uk.ac.ebi.pride.cluster.search.model.ClusterFields.*;
 public class SolrCluster {
 
     private static final java.lang.String ASSAYS_DELIMITEER = " ";
-    public static final int NUM_LOW_RES_PEAKS = 4;
 
     @Field(ID)
     private long id;
@@ -63,39 +62,20 @@ public class SolrCluster {
     @Field(CONSENSUS_SPECTRUM_MZ)
     private List<Double> consensusSpectrumMz;
 
-    @Field(CONSENSUS_SPECTRUM_MZ_MEAN_1)
-    private double consensusSpectrumMzMean1;
-
-    @Field(CONSENSUS_SPECTRUM_MZ_MEAN_2)
-    private double consensusSpectrumMzMean2;
-
-    @Field(CONSENSUS_SPECTRUM_MZ_MEAN_3)
-    private double consensusSpectrumMzMean3;
-
-    @Field(CONSENSUS_SPECTRUM_MZ_MEAN_4)
-    private double consensusSpectrumMzMean4;
-
     @Field(CONSENSUS_SPECTRUM_MZ_SEM)
     private double consensusSpectrumMzSem;
 
     @Field(CONSENSUS_SPECTRUM_INTENSITY)
     private List<Double> consensusSpectrumIntensity;
 
-    @Field(CONSENSUS_SPECTRUM_INTENSITY_MEAN_1)
-    private double consensusSpectrumIntensityMean1;
-
-    @Field(CONSENSUS_SPECTRUM_INTENSITY_MEAN_2)
-    private double consensusSpectrumIntensityMean2;
-
-    @Field(CONSENSUS_SPECTRUM_INTENSITY_MEAN_3)
-    private double consensusSpectrumIntensityMean3;
-
-    @Field(CONSENSUS_SPECTRUM_INTENSITY_MEAN_4)
-    private double consensusSpectrumIntensityMean4;
-
     @Field(CONSENSUS_SPECTRUM_INTENSITY_SEM)
     private double consensusSpectrumIntensitySem;
 
+    @Field(CONSENSUS_SPECTRUM_MZ_MEAN)
+    private Map<String, Double> consensusSpectrumMzMeans = new HashMap<String, Double>();
+
+    @Field(CONSENSUS_SPECTRUM_INTENSITY_MEAN)
+    private Map<String, Double> consensusSpectrumIntensityMeans = new HashMap<String, Double>();
 
     public long getId() {
         return id;
@@ -238,22 +218,26 @@ public class SolrCluster {
     }
 
     public double[] getConsensusSpectrumMzMeans() {
-        double[] consensusSpectrumMzMeans = new double[NUM_LOW_RES_PEAKS];
+        double[] res = new double[this.consensusSpectrumMzMeans.size()];
 
-        consensusSpectrumMzMeans[0] = this.consensusSpectrumMzMean1;
-        consensusSpectrumMzMeans[1] = this.consensusSpectrumMzMean2;
-        consensusSpectrumMzMeans[2] = this.consensusSpectrumMzMean3;
-        consensusSpectrumMzMeans[3] = this.consensusSpectrumMzMean4;
+        Iterator<Double> it = this.consensusSpectrumMzMeans.values().iterator();
+        int i=0;
+        while (it.hasNext()) {
+            res[i] = it.next();
+            i++;
+        }
 
-        return consensusSpectrumMzMeans;
+        return res;
     }
 
     public void setConsensusSpectrumMzMeans(double[] consensusSpectrumMzMeans) {
         if (consensusSpectrumMzMeans != null) {
-            this.consensusSpectrumMzMean1 = consensusSpectrumMzMeans[0];
-            this.consensusSpectrumMzMean2 = consensusSpectrumMzMeans[1];
-            this.consensusSpectrumMzMean3 = consensusSpectrumMzMeans[2];
-            this.consensusSpectrumMzMean4 = consensusSpectrumMzMeans[3];
+            for (int i = 0; i < consensusSpectrumMzMeans.length; i++) {
+                this.consensusSpectrumMzMeans.put(
+                        ClusterFields.CONSENSUS_SPECTRUM_MZ_MEAN.replace("*", ""+i),
+                        consensusSpectrumMzMeans[i]
+                );
+            }
         }
     }
 
@@ -274,22 +258,27 @@ public class SolrCluster {
     }
 
     public double[] getConsensusSpectrumIntensityMeans() {
-        double[] consensusSpectrumIntensityMeans = new double[NUM_LOW_RES_PEAKS];
 
-        consensusSpectrumIntensityMeans[0] = this.consensusSpectrumIntensityMean1;
-        consensusSpectrumIntensityMeans[1] = this.consensusSpectrumIntensityMean2;
-        consensusSpectrumIntensityMeans[2] = this.consensusSpectrumIntensityMean3;
-        consensusSpectrumIntensityMeans[3] = this.consensusSpectrumIntensityMean4;
+        double[] res = new double[this.consensusSpectrumIntensityMeans.size()];
 
-        return consensusSpectrumIntensityMeans;
+        Iterator<Double> it = this.consensusSpectrumIntensityMeans.values().iterator();
+        int i=0;
+        while (it.hasNext()) {
+            res[i] = it.next();
+            i++;
+        }
+
+        return res;
     }
 
     public void setConsensusSpectrumIntensityMeans(double[] consensusSpectrumIntensityMeans) {
         if (consensusSpectrumIntensityMeans != null) {
-            this.consensusSpectrumIntensityMean1 = consensusSpectrumIntensityMeans[0];
-            this.consensusSpectrumIntensityMean2 = consensusSpectrumIntensityMeans[1];
-            this.consensusSpectrumIntensityMean3 = consensusSpectrumIntensityMeans[2];
-            this.consensusSpectrumIntensityMean4 = consensusSpectrumIntensityMeans[3];
+            for (int i = 0; i < consensusSpectrumIntensityMeans.length; i++) {
+                this.consensusSpectrumIntensityMeans.put(
+                        ClusterFields.CONSENSUS_SPECTRUM_INTENSITY_MEAN.replace("*", ""+i),
+                        consensusSpectrumIntensityMeans[i]
+                );
+            }
         }
     }
 

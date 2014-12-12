@@ -60,7 +60,7 @@ public class SolrClusterSpectralSearchRepository implements IClusterSpectralSear
         int i = 0;
         String boostString = new String("sum( ");
         for (double mzValue: mzValues) {
-            boostString = boostString + "div(1, sqedist(" + mzValue + ", " + intensityValues[i] + ", consensus_spectrum_mz_mean_" + (i+1) + ", consensus_spectrum_intensity_mean_" + (i+1) + ")),";
+            boostString = boostString + "div(1, sqedist(" + mzValue + ", " + intensityValues[i] + ", consensus_spectrum_mz_mean_" + i + ", consensus_spectrum_intensity_mean_" + i + ")),";
             i++;
         }
         boostString = boostString.substring(0,boostString.length()-1) + ")";
