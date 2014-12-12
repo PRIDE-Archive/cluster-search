@@ -8,19 +8,19 @@ import uk.ac.ebi.pride.cluster.search.model.ClusterQuality;
  */
 public class QualityAssigner {
 
-    public static ClusterQuality calculateQuality(long numSpectra, double maxRatio) {
+    public static String calculateQuality(long numSpectra, double maxRatio) {
 
-        ClusterQuality quality = ClusterQuality.UNKNOWN;
+        String quality = ClusterQuality.UNKNOWN.toString();
 
         if (maxRatio >= 0.7){
             if (numSpectra >= 10) {
-                quality = ClusterQuality.HIGH;
+                quality = ClusterQuality.HIGH.toString();
             } else {
-                quality = ClusterQuality.MEDIUM;
+                quality = ClusterQuality.MEDIUM.toString();
             }
         }
         else {
-            quality = ClusterQuality.LOW;
+            quality = ClusterQuality.LOW.toString();
         }
 
         return quality;

@@ -25,7 +25,10 @@ import java.util.*;
 
 public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
 
-    private static final long CLUSTER_ID = 1;
+    private static final long CLUSTER_ID_1 = 1;
+    private static final long CLUSTER_ID_2 = 2;
+    private static final long CLUSTER_ID_3 = 3;
+    private static final long CLUSTER_ID_4 = 4;
     private static final long NUM_SPECTRA = 100;
     private static final double MAX_RATIO = 0.7;
     private static final String PEP1 = "ABCDE";
@@ -40,8 +43,28 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     private static final String P2_ASSAY2 = "04";
     private static final double AVG_PRECURSOR_MZ = 800.34;
     private static final double AVG_PRECURSOR_CHARGE = 1.5;
-    private static final double TEST_INTENSITY_MEAN_1 = 100.0;
-    private static final double TEST_MZ_MEAN_1 = 1000.0;
+
+    private static final double TEST_INTENSITY_MEAN_1 = 1000.0;
+    private static final double TEST_MZ_MEAN_1 = 100.0;
+
+    private static final double TEST_INTENSITY_MEAN_2 = 2000.0;
+    private static final double TEST_MZ_MEAN_2 = 200.0;
+
+    private static final double TEST_INTENSITY_MEAN_3 = 3000.0;
+    private static final double TEST_MZ_MEAN_3 = 300.0;
+
+    private static final double TEST_INTENSITY_MEAN_4 = 4000.0;
+    private static final double TEST_MZ_MEAN_4 = 400.0;
+
+    private static final double TEST_INTENSITY_MEAN_5 = 5000.0;
+    private static final double TEST_MZ_MEAN_5 = 500.0;
+
+    private static final double TEST_INTENSITY_MEAN_6 = 6000.0;
+    private static final double TEST_MZ_MEAN_6 = 600.0;
+
+    private static final double TEST_INTENSITY_MEAN_7 = 7000.0;
+    private static final double TEST_MZ_MEAN_7 = 700.0;
+
     private ClusterIndexService clusterIndexService;
     private ClusterSearchService clusterSearchService;
 
@@ -76,31 +99,44 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
 
     @Test
     public void testSave() throws Exception {
-        SolrCluster cluster = createCluster();
+        SolrCluster cluster = createCluster(CLUSTER_ID_1, null, null);
         clusterIndexService.save(cluster);
 
-        checkCluster(clusterSearchService.findById(CLUSTER_ID));
+        checkCluster(CLUSTER_ID_1, clusterSearchService.findById(CLUSTER_ID_1));
     }
 
     @Test
     public void testFindByNearestPeaks() {
-        SolrCluster cluster = createCluster();
-        clusterIndexService.save(cluster);
+        SolrCluster cluster3 = createCluster(CLUSTER_ID_3, createMzValuesSet3(), createIntensityValuesSet3());
+        clusterIndexService.save(cluster3);
+        SolrCluster cluster2 = createCluster(CLUSTER_ID_2, createMzValuesSet2(), createIntensityValuesSet2());
+        clusterIndexService.save(cluster2);
+        SolrCluster cluster1 = createCluster(CLUSTER_ID_1, createMzValuesSet1(), createIntensityValuesSet1());
+        clusterIndexService.save(cluster1);
+        SolrCluster cluster4 = createCluster(CLUSTER_ID_4, createMzValuesSet4(), createIntensityValuesSet4());
+        clusterIndexService.save(cluster4);
 
-        Page<SolrCluster> res = clusterSearchService.findByNearestPeaks(TEST_MZ_MEAN_1, TEST_INTENSITY_MEAN_1, new PageRequest(0, 1));
+        Page<SolrCluster> res = clusterSearchService.findAll(new PageRequest(0, 5));
         assertNotNull(res);
-        checkCluster( res.getContent().get(0) );
+        assertTrue(res.getTotalElements() == 4);
+        res = clusterSearchService.findByNearestPeaks("HIGH", createMzValuesSetUser(), createIntensityValuesSetUser(), new PageRequest(0, 5));
+        assertNotNull(res);
+        assertTrue(res.getTotalElements() == 4);
+        checkCluster(CLUSTER_ID_1, res.getContent().get(0) );
+        checkCluster(CLUSTER_ID_2, res.getContent().get(1) );
+        checkCluster(CLUSTER_ID_3, res.getContent().get(2) );
+        checkCluster(CLUSTER_ID_4, res.getContent().get(3) );
     }
 
     private void deleteAllData() {
         clusterIndexService.deleteAll();
     }
 
-    private SolrCluster createCluster() {
+    private SolrCluster createCluster(long clusterId, double[] mzValues, double[] intensityValues) {
 
-        Set<String> pepSequences = new HashSet<String>();
+        List<String> pepSequences = new LinkedList<String>();
         Collections.addAll(pepSequences, PEP1, PEP2);
-        Set<String> proteinAccs = new HashSet<String>();
+        List<String> proteinAccs = new LinkedList<String>();
         Collections.addAll(proteinAccs, PROT1, PROT2);
 
         Map<String, List<String>> projectAssays = new HashMap<String, List<String>>();
@@ -110,7 +146,7 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         List<String> projects = new ArrayList<String>(Arrays.asList(PROJECT1, PROJECT2));
 
         SolrCluster cluster = new SolrCluster();
-        cluster.setId(CLUSTER_ID);
+        cluster.setId(clusterId);
         cluster.setClusterQuality(QualityAssigner.calculateQuality(NUM_SPECTRA, MAX_RATIO));
         cluster.setHighestRatioPepSequences(pepSequences);
         cluster.setHighestRatioProteinAccessions(proteinAccs);
@@ -120,16 +156,16 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         cluster.setAveragePrecursorMz(AVG_PRECURSOR_MZ);
         cluster.setProjects(projects);
         cluster.setProjectAssays(projectAssays);
-        cluster.setConsensusSpectrumIntensityMean1(TEST_INTENSITY_MEAN_1);
-        cluster.setConsensusSpectrumMzMean1(TEST_MZ_MEAN_1);
+        cluster.setConsensusSpectrumMzMeans(mzValues);
+        cluster.setConsensusSpectrumIntensityMeans(intensityValues);
         return cluster;
     }
 
-    private void checkCluster(SolrCluster cluster) {
+    private void checkCluster(long clusterId, SolrCluster cluster) {
 
-        Set<String> pepSequences = new HashSet<String>();
+        List<String> pepSequences = new LinkedList<String>();
         Collections.addAll(pepSequences, PEP1, PEP2);
-        Set<String> proteinAccs = new HashSet<String>();
+        List<String> proteinAccs = new LinkedList<String>();
         Collections.addAll(proteinAccs, PROT1, PROT2);
 
         Map<String, List<String>> projectAssays = new HashMap<String, List<String>>();
@@ -139,7 +175,7 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         List<String> projects = new ArrayList<String>(Arrays.asList(PROJECT1, PROJECT2));
 
         assertNotNull(cluster);
-        assertEquals(CLUSTER_ID, cluster.getId());
+        assertEquals(clusterId, cluster.getId());
         assertEquals(MAX_RATIO, cluster.getMaxRatio(), 0);
         assertEquals(NUM_SPECTRA, cluster.getNumberOfSpectra());
         assertEquals(QualityAssigner.calculateQuality(NUM_SPECTRA, MAX_RATIO), cluster.getClusterQuality());
@@ -152,6 +188,96 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         for (String key : projectAssays.keySet()) {
             assertEquals(projectAssays.get(key), cluster.getProjectAssays().get(key));
         }
+    }
+
+    private double[] createMzValuesSet1() {
+        double[] res = new double[4];
+        res[0] = TEST_MZ_MEAN_1;
+        res[1] = TEST_MZ_MEAN_2;
+        res[2] = TEST_MZ_MEAN_3;
+        res[3] = TEST_MZ_MEAN_4;
+        return res;
+    }
+
+    private double[] createIntensityValuesSet1() {
+        double[] res = new double[4];
+        res[0] = TEST_INTENSITY_MEAN_1;
+        res[1] = TEST_INTENSITY_MEAN_2;
+        res[2] = TEST_INTENSITY_MEAN_3;
+        res[3] = TEST_INTENSITY_MEAN_4;
+        return res;
+    }
+
+    private double[] createMzValuesSet2() {
+        double[] res = new double[4];
+        res[0] = TEST_MZ_MEAN_2;
+        res[1] = TEST_MZ_MEAN_3;
+        res[2] = TEST_MZ_MEAN_4;
+        res[3] = TEST_MZ_MEAN_5;
+        return res;
+    }
+
+    private double[] createIntensityValuesSet2() {
+        double[] res = new double[4];
+        res[0] = TEST_INTENSITY_MEAN_2;
+        res[1] = TEST_INTENSITY_MEAN_3;
+        res[2] = TEST_INTENSITY_MEAN_4;
+        res[3] = TEST_INTENSITY_MEAN_5;
+        return res;
+    }
+
+    private double[] createMzValuesSet3() {
+        double[] res = new double[4];
+        res[0] = TEST_MZ_MEAN_3;
+        res[1] = TEST_MZ_MEAN_4;
+        res[2] = TEST_MZ_MEAN_5;
+        res[3] = TEST_MZ_MEAN_6;
+        return res;
+    }
+
+    private double[] createIntensityValuesSet3() {
+        double[] res = new double[4];
+        res[0] = TEST_INTENSITY_MEAN_3;
+        res[1] = TEST_INTENSITY_MEAN_4;
+        res[2] = TEST_INTENSITY_MEAN_5;
+        res[3] = TEST_INTENSITY_MEAN_6;
+        return res;
+    }
+
+    private double[] createMzValuesSet4() {
+        double[] res = new double[4];
+        res[0] = TEST_MZ_MEAN_4;
+        res[1] = TEST_MZ_MEAN_5;
+        res[2] = TEST_MZ_MEAN_6;
+        res[3] = TEST_MZ_MEAN_7;
+        return res;
+    }
+
+    private double[] createIntensityValuesSet4() {
+        double[] res = new double[4];
+        res[0] = TEST_INTENSITY_MEAN_4;
+        res[1] = TEST_INTENSITY_MEAN_5;
+        res[2] = TEST_INTENSITY_MEAN_6;
+        res[3] = TEST_INTENSITY_MEAN_7;
+        return res;
+    }
+
+    private double[] createMzValuesSetUser() {
+        double[] res = new double[4];
+        res[0] = TEST_MZ_MEAN_1 + (Math.random() * 40.0);
+        res[1] = TEST_MZ_MEAN_2 + (Math.random() * 40.0);
+        res[2] = TEST_MZ_MEAN_3 + (Math.random() * 40.0);
+        res[3] = TEST_MZ_MEAN_4 + (Math.random() * 40.0);
+        return res;
+    }
+
+    private double[] createIntensityValuesSetUser() {
+        double[] res = new double[4];
+        res[0] = TEST_INTENSITY_MEAN_1 + (Math.random() * 400.0);
+        res[1] = TEST_INTENSITY_MEAN_2 + (Math.random() * 400.0);
+        res[2] = TEST_INTENSITY_MEAN_3 + (Math.random() * 400.0);
+        res[3] = TEST_INTENSITY_MEAN_4 + (Math.random() * 400.0);
+        return res;
     }
 
 }

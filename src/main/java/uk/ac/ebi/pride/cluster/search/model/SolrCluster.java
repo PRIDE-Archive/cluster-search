@@ -14,15 +14,16 @@ import static uk.ac.ebi.pride.cluster.search.model.ClusterFields.*;
 public class SolrCluster {
 
     private static final java.lang.String ASSAYS_DELIMITEER = " ";
+    public static final int NUM_LOW_RES_PEAKS = 4;
 
     @Field(ID)
     private long id;
 
     @Field(HIGHEST_RATIO_PEP_SEQUENCE)
-    private Set<String> highestRatioPepSequences;
+    private List<String> highestRatioPepSequences;
 
     @Field(HIGHEST_RATIO_PROTEIN_ACCESSION)
-    private Set<String> highestRatioProteinAccessions;
+    private List<String> highestRatioProteinAccessions;
 
     @Field(NUMBER_OF_SPECTRA)
     private long numberOfSpectra;
@@ -31,7 +32,7 @@ public class SolrCluster {
     private double maxRatio;
 
     @Field(CLUSTER_QUALITY)
-    private ClusterQuality clusterQuality;
+    private String clusterQuality;
 
     @Field(AVG_PRECURSOR_MZ)
     private double averagePrecursorMz;
@@ -112,19 +113,19 @@ public class SolrCluster {
         this.numberOfSpectra = numberOfSpectra;
     }
 
-    public Set<String> getHighestRatioPepSequences() {
+    public List<String> getHighestRatioPepSequences() {
         return highestRatioPepSequences;
     }
 
-    public void setHighestRatioPepSequences(Set<String> highestRatioPepSequences) {
+    public void setHighestRatioPepSequences(List<String> highestRatioPepSequences) {
         this.highestRatioPepSequences = highestRatioPepSequences;
     }
 
-    public Set<String> getHighestRatioProteinAccessions() {
+    public List<String> getHighestRatioProteinAccessions() {
         return highestRatioProteinAccessions;
     }
 
-    public void setHighestRatioProteinAccessions(Set<String> highestRatioProteinAccessions) {
+    public void setHighestRatioProteinAccessions(List<String> highestRatioProteinAccessions) {
         this.highestRatioProteinAccessions = highestRatioProteinAccessions;
     }
 
@@ -136,11 +137,11 @@ public class SolrCluster {
         this.maxRatio = maxRatio;
     }
 
-    public ClusterQuality getClusterQuality() {
+    public String getClusterQuality() {
         return clusterQuality;
     }
 
-    public void setClusterQuality(ClusterQuality clusterQuality) {
+    public void setClusterQuality(String clusterQuality) {
         this.clusterQuality = clusterQuality;
     }
 
@@ -284,43 +285,44 @@ public class SolrCluster {
         this.consensusSpectrumIntensity = consensusSpectrumIntensity;
     }
 
-    public double getConsensusSpectrumIntensityMean1() {
-        return consensusSpectrumIntensityMean1;
+    public double[] getConsensusSpectrumIntensityMeans() {
+        double[] consensusSpectrumIntensityMeans = new double[NUM_LOW_RES_PEAKS];
+
+        consensusSpectrumIntensityMeans[0] = this.consensusSpectrumIntensityMean1;
+        consensusSpectrumIntensityMeans[1] = this.consensusSpectrumIntensityMean2;
+        consensusSpectrumIntensityMeans[2] = this.consensusSpectrumIntensityMean3;
+        consensusSpectrumIntensityMeans[3] = this.consensusSpectrumIntensityMean4;
+
+        return consensusSpectrumIntensityMeans;
     }
 
-    public void setConsensusSpectrumIntensityMean1(double consensusSpectrumIntensityMean1) {
-        this.consensusSpectrumIntensityMean1 = consensusSpectrumIntensityMean1;
+    public void setConsensusSpectrumIntensityMeans(double[] consensusSpectrumIntensityMeans) {
+        if (consensusSpectrumIntensityMeans != null) {
+            this.consensusSpectrumIntensityMean1 = consensusSpectrumIntensityMeans[0];
+            this.consensusSpectrumIntensityMean2 = consensusSpectrumIntensityMeans[1];
+            this.consensusSpectrumIntensityMean3 = consensusSpectrumIntensityMeans[2];
+            this.consensusSpectrumIntensityMean4 = consensusSpectrumIntensityMeans[3];
+        }
     }
 
-    public double getConsensusSpectrumIntensityMean2() {
-        return consensusSpectrumIntensityMean2;
+    public double[] getConsensusSpectrumMzMeans() {
+        double[] consensusSpectrumMzMeans = new double[NUM_LOW_RES_PEAKS];
+
+        consensusSpectrumMzMeans[0] = this.consensusSpectrumMzMean1;
+        consensusSpectrumMzMeans[1] = this.consensusSpectrumMzMean2;
+        consensusSpectrumMzMeans[2] = this.consensusSpectrumMzMean3;
+        consensusSpectrumMzMeans[3] = this.consensusSpectrumMzMean4;
+
+        return consensusSpectrumMzMeans;
     }
 
-    public void setConsensusSpectrumIntensityMean2(double consensusSpectrumIntensityMean2) {
-        this.consensusSpectrumIntensityMean2 = consensusSpectrumIntensityMean2;
+    public void setConsensusSpectrumMzMeans(double[] consensusSpectrumMzMeans) {
+        if (consensusSpectrumMzMeans != null) {
+            this.consensusSpectrumMzMean1 = consensusSpectrumMzMeans[0];
+            this.consensusSpectrumMzMean2 = consensusSpectrumMzMeans[1];
+            this.consensusSpectrumMzMean3 = consensusSpectrumMzMeans[2];
+            this.consensusSpectrumMzMean4 = consensusSpectrumMzMeans[3];
+        }
     }
 
-    public double getConsensusSpectrumIntensityMean3() {
-        return consensusSpectrumIntensityMean3;
-    }
-
-    public void setConsensusSpectrumIntensityMean3(double consensusSpectrumIntensityMean3) {
-        this.consensusSpectrumIntensityMean3 = consensusSpectrumIntensityMean3;
-    }
-
-    public double getConsensusSpectrumIntensityMean4() {
-        return consensusSpectrumIntensityMean4;
-    }
-
-    public void setConsensusSpectrumIntensityMean4(double consensusSpectrumIntensityMean4) {
-        this.consensusSpectrumIntensityMean4 = consensusSpectrumIntensityMean4;
-    }
-
-    public double getConsensusSpectrumIntensitySem() {
-        return consensusSpectrumIntensitySem;
-    }
-
-    public void setConsensusSpectrumIntensitySem(double consensusSpectrumIntensitySem) {
-        this.consensusSpectrumIntensitySem = consensusSpectrumIntensitySem;
-    }
 }

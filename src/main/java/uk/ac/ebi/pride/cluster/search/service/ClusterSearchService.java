@@ -1,6 +1,5 @@
 package uk.ac.ebi.pride.cluster.search.service;
 
-import org.apache.solr.client.solrj.SolrServer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -42,8 +41,12 @@ public class ClusterSearchService implements IClusterSearchService {
     }
 
     @Override
-    public Page<SolrCluster> findByNearestPeaks(double mz1, double intensity1, Pageable pageable) {
-        return solrClusterSpectralSearchRepository.findByNearestPeaks(mz1, intensity1, pageable);
+    public Page<SolrCluster> findByNearestPeaks(String quality, double[] mzValues, double[] intensityValues, Pageable pageable) {
+        assert(mzValues != null): "MZ values are needed";
+        assert(intensityValues != null): "Intensity values are needed";
+        assert(mzValues.length == intensityValues.length): "Same number of MZ and Intensity are needed";
+
+        return solrClusterSpectralSearchRepository.findByNearestPeaks(quality, mzValues, intensityValues, pageable);
     }
 
 
