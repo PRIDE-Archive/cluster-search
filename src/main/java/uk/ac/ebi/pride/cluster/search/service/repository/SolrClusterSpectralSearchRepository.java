@@ -27,10 +27,10 @@ public class SolrClusterSpectralSearchRepository implements IClusterSpectralSear
     }
 
     @Override
-    public Page<SolrCluster> findByNearestPeaks(String quality, double[] mzValues, double[] intensityValues, final Pageable pageable) {
+    public Page<SolrCluster> findByNearestPeaks(String quality, double precursorMz, double windowSize, double[] mzValues, double[] intensityValues, final Pageable pageable) {
 
         // prepare the query
-        SolrQuery query = prepareBasicQuery(quality, mzValues, intensityValues);
+        SolrQuery query = prepareBasicQuery(quality, precursorMz, windowSize, mzValues, intensityValues);
 
         query.setStart(pageable.getPageNumber());
         query.setRows(pageable.getPageSize());
@@ -54,9 +54,10 @@ public class SolrClusterSpectralSearchRepository implements IClusterSpectralSear
     }
 
 
-    private SolrQuery prepareBasicQuery(String quality, double[] mzValues, double[] intensityValues) {
+    private SolrQuery prepareBasicQuery(String quality, double precursorMz, double windowSize, double[] mzValues, double[] intensityValues) {
         // prepare the query
         SolrQuery query = getBasicEDismaxQuery(quality);
+        query.setParam("bq", ClusterFields.AVG_PRECURSOR_MZ + ":[" + (precursorMz-windowSize) + " TO " + (precursorMz+windowSize) + "]");
         int i = 0;
         String boostString = new String("sum( ");
         for (double mzValue: mzValues) {

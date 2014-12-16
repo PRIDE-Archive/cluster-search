@@ -18,7 +18,7 @@ public interface IClusterSearchService {
     SolrCluster findById(Long id);
 
     Page<SolrCluster> findByHighestRatioPepSequences(Set<String> sequences, Pageable pageable);
-    Page<SolrCluster> findByNearestPeaks(String quality, double[] mzValues, double[] intensityValues, Pageable pageable);
+    Page<SolrCluster> findByNearestPeaks(String quality, double precursorMz, double windowSize, double[] mzValues, double[] intensityValues, Pageable pageable);
 
     boolean existsCluster(Long clusterId);
 }

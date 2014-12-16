@@ -10,6 +10,6 @@ import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
  */
 public interface IClusterSpectralSearchRepository {
 
-    Page<SolrCluster> findByNearestPeaks(String quality, double[] mzValues, double[] intensityValues, Pageable pageable);
+    Page<SolrCluster> findByNearestPeaks(String quality, double precursorMz, double windowSize, double[] mzValues, double[] intensityValues, Pageable pageable);
 
 }

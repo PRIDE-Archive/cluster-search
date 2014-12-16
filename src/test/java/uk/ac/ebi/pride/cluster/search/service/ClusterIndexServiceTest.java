@@ -119,7 +119,7 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         Page<SolrCluster> res = clusterSearchService.findAll(new PageRequest(0, 5));
         assertNotNull(res);
         assertTrue(res.getTotalElements() == 4);
-        res = clusterSearchService.findByNearestPeaks("HIGH", createMzValuesSetUser(), createIntensityValuesSetUser(), new PageRequest(0, 5));
+        res = clusterSearchService.findByNearestPeaks("HIGH", AVG_PRECURSOR_MZ, 1000.0, createMzValuesSetUser(), createIntensityValuesSetUser(), new PageRequest(0, 5));
         assertNotNull(res);
         assertTrue(res.getTotalElements() == 4);
         checkCluster(CLUSTER_ID_1, res.getContent().get(0) );

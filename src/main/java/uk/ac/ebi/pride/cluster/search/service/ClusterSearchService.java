@@ -41,12 +41,12 @@ public class ClusterSearchService implements IClusterSearchService {
     }
 
     @Override
-    public Page<SolrCluster> findByNearestPeaks(String quality, double[] mzValues, double[] intensityValues, Pageable pageable) {
+    public Page<SolrCluster> findByNearestPeaks(String quality, double precursorMz, double windowSize, double[] mzValues, double[] intensityValues, Pageable pageable) {
         assert(mzValues != null): "MZ values are needed";
         assert(intensityValues != null): "Intensity values are needed";
         assert(mzValues.length == intensityValues.length): "Same number of MZ and Intensity are needed";
 
-        return solrClusterSpectralSearchRepository.findByNearestPeaks(quality, mzValues, intensityValues, pageable);
+        return solrClusterSpectralSearchRepository.findByNearestPeaks(quality, precursorMz, windowSize, mzValues, intensityValues, pageable);
     }
 
 
