@@ -56,8 +56,9 @@ public class SolrClusterSpectralSearchRepository implements IClusterSpectralSear
 
     private SolrQuery prepareBasicQuery(String quality, double precursorMz, double windowSize, double[] mzValues, double[] intensityValues) {
         // prepare the query
-        SolrQuery query = getBasicEDismaxQuery(quality);
-        query.setParam("bq", ClusterFields.AVG_PRECURSOR_MZ + ":[" + (precursorMz-windowSize) + " TO " + (precursorMz+windowSize) + "]");
+        SolrQuery query = getBasicEDismaxQuery();
+        query.setParam("q", ClusterFields.AVG_PRECURSOR_MZ + ":[" + (precursorMz-windowSize) + " TO " + (precursorMz+windowSize) + "]");
+        query.setParam("fq", ClusterFields.CLUSTER_QUALITY+":"+quality);
         int i = 0;
         String boostString = new String("sum( ");
         for (double mzValue: mzValues) {
@@ -73,13 +74,11 @@ public class SolrClusterSpectralSearchRepository implements IClusterSpectralSear
         return query;
     }
 
-    public static SolrQuery getBasicEDismaxQuery(String queryString) {
+    public static SolrQuery getBasicEDismaxQuery() {
         SolrQuery query = new SolrQuery();
 
         query.setParam("defType", QUERY_DEF_TYPE); // use DisMax query parser
         query.setParam("tie", EDISMAX_TIE_FACTOR); // 0.0 means that just the maximum scoring field is used. 1.0 means that all scoring fields are summed
-        query.setParam("qf", ClusterFields.CLUSTER_QUALITY);
-        query.setParam("q", queryString);
 
         return query;
     }
