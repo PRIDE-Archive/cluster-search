@@ -8,6 +8,7 @@ package uk.ac.ebi.pride.cluster.search.service;
 
 import org.apache.solr.SolrTestCaseJ4;
 import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.junit.After;
 import org.junit.Before;
@@ -15,12 +16,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.solr.core.SolrTemplate;
 import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepositoryFactory;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterSpectralSearchRepository;
 import uk.ac.ebi.pride.cluster.search.util.QualityAssigner;
 
+import java.io.IOException;
 import java.util.*;
 
 public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
@@ -41,17 +42,25 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     private static final String PROJECT2 = "PXT000002";
     private static final String P2_ASSAY1 = "03";
     private static final String P2_ASSAY2 = "04";
-    private static final double AVG_PRECURSOR_MZ = 800.34;
+
     private static final double AVG_PRECURSOR_CHARGE = 1.5;
+
+    private static final double AVG_PRECURSOR_MZ_1 = 2000.0;
+    private static final double AVG_PRECURSOR_MZ_2 = 2500.0;
+    private static final double AVG_PRECURSOR_MZ_3 = 3000.0;
+    private static final double AVG_PRECURSOR_MZ_4 = 3500.0;
 
     private static final double TEST_INTENSITY_MEAN_1 = 1000.0;
     private static final double TEST_MZ_MEAN_1 = 100.0;
 
+
     private static final double TEST_INTENSITY_MEAN_2 = 2000.0;
     private static final double TEST_MZ_MEAN_2 = 200.0;
 
+
     private static final double TEST_INTENSITY_MEAN_3 = 3000.0;
     private static final double TEST_MZ_MEAN_3 = 300.0;
+
 
     private static final double TEST_INTENSITY_MEAN_4 = 4000.0;
     private static final double TEST_MZ_MEAN_4 = 400.0;
@@ -65,8 +74,9 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     private static final double TEST_INTENSITY_MEAN_7 = 7000.0;
     private static final double TEST_MZ_MEAN_7 = 700.0;
 
-    private ClusterIndexService clusterIndexService;
-    private ClusterSearchService clusterSearchService;
+    private SolrClusterSpectralSearchRepository solrClusterSpectralRepository;
+
+    private SolrServer server;
 
     @BeforeClass
     public static void initialise() throws Exception {
@@ -80,11 +90,10 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        SolrServer server = new EmbeddedSolrServer(h.getCoreContainer(), h.getCore().getName());
-        SolrClusterRepositoryFactory solrClusterRepositoryFactory = new SolrClusterRepositoryFactory(new SolrTemplate(server));
 
-        clusterIndexService = new ClusterIndexService(solrClusterRepositoryFactory.create());
-        clusterSearchService = new ClusterSearchService(solrClusterRepositoryFactory.create(), new SolrClusterSpectralSearchRepository(server));
+        server = new EmbeddedSolrServer(h.getCoreContainer(), h.getCore().getName());
+
+        solrClusterSpectralRepository = new SolrClusterSpectralSearchRepository(server);
 
         // delete all data
         deleteAllData();
@@ -98,41 +107,35 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     }
 
     @Test
-    public void testSave() throws Exception {
-        SolrCluster cluster = createCluster(CLUSTER_ID_1, null, null);
-        clusterIndexService.save(cluster);
+    public void testFindByNearestPeaks() throws IOException, SolrServerException {
+        SolrCluster cluster3 = createCluster(CLUSTER_ID_3, AVG_PRECURSOR_MZ_3, createMzValuesSet3(), createIntensityValuesSet3());
+        save(cluster3);
+        SolrCluster cluster2 = createCluster(CLUSTER_ID_2, AVG_PRECURSOR_MZ_2, createMzValuesSet2(), createIntensityValuesSet2());
+        save(cluster2);
+        SolrCluster cluster1 = createCluster(CLUSTER_ID_1, AVG_PRECURSOR_MZ_1, createMzValuesSet1(), createIntensityValuesSet1());
+        save(cluster1);
+        SolrCluster cluster4 = createCluster(CLUSTER_ID_4, AVG_PRECURSOR_MZ_4, createMzValuesSet4(), createIntensityValuesSet4());
+        save(cluster4);
 
-        checkCluster(CLUSTER_ID_1, clusterSearchService.findById(CLUSTER_ID_1));
-    }
-
-    @Test
-    public void testFindByNearestPeaks() {
-        SolrCluster cluster3 = createCluster(CLUSTER_ID_3, createMzValuesSet3(), createIntensityValuesSet3());
-        clusterIndexService.save(cluster3);
-        SolrCluster cluster2 = createCluster(CLUSTER_ID_2, createMzValuesSet2(), createIntensityValuesSet2());
-        clusterIndexService.save(cluster2);
-        SolrCluster cluster1 = createCluster(CLUSTER_ID_1, createMzValuesSet1(), createIntensityValuesSet1());
-        clusterIndexService.save(cluster1);
-        SolrCluster cluster4 = createCluster(CLUSTER_ID_4, createMzValuesSet4(), createIntensityValuesSet4());
-        clusterIndexService.save(cluster4);
-
-        Page<SolrCluster> res = clusterSearchService.findAll(new PageRequest(0, 5));
+        Page<SolrCluster> res = solrClusterSpectralRepository.findByNearestPeaks("HIGH", AVG_PRECURSOR_MZ_1, 100.0, createMzValuesSetUser(), createIntensityValuesSetUser(), new PageRequest(0, 5));
         assertNotNull(res);
         assertTrue(res.getTotalElements() == 4);
-        res = clusterSearchService.findByNearestPeaks("HIGH", AVG_PRECURSOR_MZ, 1000.0, createMzValuesSetUser(), createIntensityValuesSetUser(), new PageRequest(0, 5));
-        assertNotNull(res);
-        assertTrue(res.getTotalElements() == 4);
-        checkCluster(CLUSTER_ID_1, res.getContent().get(0) );
-        checkCluster(CLUSTER_ID_2, res.getContent().get(1) );
-        checkCluster(CLUSTER_ID_3, res.getContent().get(2) );
-        checkCluster(CLUSTER_ID_4, res.getContent().get(3) );
+        checkCluster(CLUSTER_ID_1, AVG_PRECURSOR_MZ_1, res.getContent().get(0) );
+        checkCluster(CLUSTER_ID_2, AVG_PRECURSOR_MZ_2, res.getContent().get(1) );
+        checkCluster(CLUSTER_ID_3, AVG_PRECURSOR_MZ_3, res.getContent().get(2) );
+        checkCluster(CLUSTER_ID_4, AVG_PRECURSOR_MZ_4, res.getContent().get(3) );
     }
 
-    private void deleteAllData() {
-        clusterIndexService.deleteAll();
+    private void save(SolrCluster cluster) throws IOException, SolrServerException {
+        server.addBean(cluster);
+        server.commit();
     }
 
-    private SolrCluster createCluster(long clusterId, double[] mzValues, double[] intensityValues) {
+    private void deleteAllData() throws IOException, SolrServerException {
+        server.deleteByQuery("*:*");
+    }
+
+    private SolrCluster createCluster(long clusterId, double precursorMz, double[] mzValues, double[] intensityValues) {
 
         List<String> pepSequences = new LinkedList<String>();
         Collections.addAll(pepSequences, PEP1, PEP2);
@@ -153,7 +156,7 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         cluster.setMaxRatio(MAX_RATIO);
         cluster.setNumberOfSpectra(NUM_SPECTRA);
         cluster.setAveragePrecursorCharge(AVG_PRECURSOR_CHARGE);
-        cluster.setAveragePrecursorMz(AVG_PRECURSOR_MZ);
+        cluster.setAveragePrecursorMz(precursorMz);
         cluster.setProjects(projects);
         cluster.setProjectAssays(projectAssays);
         cluster.setConsensusSpectrumMzMeans(mzValues);
@@ -161,7 +164,7 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         return cluster;
     }
 
-    private void checkCluster(long clusterId, SolrCluster cluster) {
+    private void checkCluster(long clusterId, double avgPrecursorMz,SolrCluster cluster) {
 
         List<String> pepSequences = new LinkedList<String>();
         Collections.addAll(pepSequences, PEP1, PEP2);
@@ -181,7 +184,7 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         assertEquals(QualityAssigner.calculateQuality(NUM_SPECTRA, MAX_RATIO), cluster.getClusterQuality());
         assertEquals(pepSequences, cluster.getHighestRatioPepSequences());
         assertEquals(AVG_PRECURSOR_CHARGE, cluster.getAveragePrecursorCharge(), 0);
-        assertEquals(AVG_PRECURSOR_MZ, cluster.getAveragePrecursorMz(), 0);
+        assertEquals(avgPrecursorMz, cluster.getAveragePrecursorMz(), 0);
         assertEquals(proteinAccs, cluster.getHighestRatioProteinAccessions());
         assertEquals(projects, cluster.getProjects());
 
