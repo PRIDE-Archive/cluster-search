@@ -21,9 +21,7 @@
      directory, it will be re-loaded every commit.
 
    See http://wiki.apache.org/solr/QueryElevationComponent for more info
-             
--->          
-<elevate>    
-   
-             
-</elevate>   
+
+-->
+<elevate>
+</elevate>

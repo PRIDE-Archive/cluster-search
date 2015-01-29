@@ -118,7 +118,6 @@
         <dynamicField name="consensus_spectrum_intensity_mean_*"  type="double" indexed="true"  stored="true"/>
         <field name="consensus_spectrum_intensity_sem" type="double" indexed="true" stored="true" required="false"/>
 
-
         <!-- species and friends -->
         <field name="species_names" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
         <field name="species_accessions" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
@@ -149,7 +148,6 @@
             EXAMPLE:  name="*_i" will match any field ending in _i (like myid_i, z_i)
             RESTRICTION: the glob-like pattern in the name attribute must have
             a "*" only at the start or the end.  -->
-
 
         <dynamicField name="*_i"  type="int"    indexed="true"  stored="true"/>
         <dynamicField name="*_is" type="int"    indexed="true"  stored="true"  multiValued="true"/>
