@@ -41,6 +41,9 @@
 
     <properties>
         <solrj.version>4.8.0</solrj.version>
+        <commons-math.version>2.0</commons-math.version>
+        <spring-test.version>4.1.1.RELEASE</spring-test.version>
+        <spring-data-solr.version>1.3.1.RELEASE</spring-data-solr.version>
     </properties>
 
     <build>
@@ -120,14 +123,14 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>4.1.1.RELEASE</version>
+            <version>${spring-test.version}</version>
         </dependency>
         <!-- ##### 3rd party dependencies ##### ##### ##### ##### ##### -->
         <!-- spring-data solr-->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-solr</artifactId>
-            <version>1.3.1.RELEASE</version>
+            <version>${spring-data-solr.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.httpcomponents</groupId>
@@ -178,7 +181,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math</artifactId>
-            <version>2.0</version>
+            <version>${commons-math.version}</version>
         </dependency>
 
     </dependencies>
