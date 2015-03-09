@@ -17,9 +17,7 @@ import org.junit.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
-import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepositoryFactory;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterSpectralSearchRepository;
-import uk.ac.ebi.pride.cluster.search.util.QualityAssigner;
 
 import java.io.IOException;
 import java.util.*;
@@ -31,6 +29,17 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     private static final long CLUSTER_ID_3 = 3;
     private static final long CLUSTER_ID_4 = 4;
     private static final long NUM_SPECTRA = 100;
+    private static final long TOTAL_NUM_SPECTRA = 110;
+
+    private static final long NUM_PROJECTS = 5;
+    private static final long TOTAL_NUM_PROJECTS = 6;
+
+    private static final long NUM_SPECIES = 3;
+    private static final long TOTAL_NUM_SPECIES = 4;
+
+    private static final long NUM_MODIFICATIONS = 10;
+    private static final long TOTAL_NUM_MODIFICATIONS = 12;
+
     private static final double MAX_RATIO = 0.7;
     private static final String PEP1 = "ABCDE";
     private static final String PEP2 = "FGHL";
@@ -80,9 +89,9 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
 
     @BeforeClass
     public static void initialise() throws Exception {
-        initCore("src/test/resources/solr/cluster-index/conf/solrconfig.xml",
-                "src/test/resources/solr/cluster-index/conf/schema.xml",
-                "src/test/resources/solr",
+        initCore("solr/cluster-index/conf/solrconfig.xml",
+                "solr/cluster-index/conf/schema.xml",
+                "solr",
                 "cluster-index");
     }
 
@@ -150,11 +159,18 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
 
         SolrCluster cluster = new SolrCluster();
         cluster.setId(clusterId);
-        cluster.setClusterQuality(QualityAssigner.calculateQuality(NUM_SPECTRA, MAX_RATIO));
+        cluster.setClusterQuality("HIGH");
         cluster.setHighestRatioPepSequences(pepSequences);
         cluster.setHighestRatioProteinAccessions(proteinAccs);
         cluster.setMaxRatio(MAX_RATIO);
         cluster.setNumberOfSpectra(NUM_SPECTRA);
+        cluster.setTotalNumberOfSpectra(TOTAL_NUM_SPECTRA);
+        cluster.setNumberOfProjects(NUM_PROJECTS);
+        cluster.setTotalNumberOfProjects(TOTAL_NUM_PROJECTS);
+        cluster.setNumberOfSpecies(NUM_SPECIES);
+        cluster.setTotalNumberOfSpecies(TOTAL_NUM_SPECIES);
+        cluster.setNumberOfModifications(NUM_MODIFICATIONS);
+        cluster.setTotalNumberOfModifications(TOTAL_NUM_MODIFICATIONS);
         cluster.setAveragePrecursorCharge(AVG_PRECURSOR_CHARGE);
         cluster.setAveragePrecursorMz(precursorMz);
         cluster.setProjects(projects);
@@ -181,7 +197,7 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         assertEquals(clusterId, cluster.getId());
         assertEquals(MAX_RATIO, cluster.getMaxRatio(), 0);
         assertEquals(NUM_SPECTRA, cluster.getNumberOfSpectra());
-        assertEquals(QualityAssigner.calculateQuality(NUM_SPECTRA, MAX_RATIO), cluster.getClusterQuality());
+        assertEquals("HIGH", cluster.getClusterQuality());
         assertEquals(pepSequences, cluster.getHighestRatioPepSequences());
         assertEquals(AVG_PRECURSOR_CHARGE, cluster.getAveragePrecursorCharge(), 0);
         assertEquals(avgPrecursorMz, cluster.getAveragePrecursorMz(), 0);
