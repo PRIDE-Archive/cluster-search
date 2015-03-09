@@ -117,12 +117,12 @@ public class SolrCluster {
         this.maxRatio = maxRatio;
     }
 
-    public ClusterQuality getClusterQuality() {
-        return ClusterQuality.valueOf(clusterQuality);
+    public String getClusterQuality() {
+        return clusterQuality;
     }
 
-    public void setClusterQuality(ClusterQuality clusterQuality) {
-        this.clusterQuality = clusterQuality.toString();
+    public void setClusterQuality(String clusterQuality) {
+        this.clusterQuality = clusterQuality;
     }
 
     public double getAveragePrecursorMz() {
