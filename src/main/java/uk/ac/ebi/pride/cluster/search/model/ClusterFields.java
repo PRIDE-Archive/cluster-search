@@ -11,6 +11,13 @@ public class ClusterFields {
     public static final String HIGHEST_RATIO_PROTEIN_ACCESSION = "highest_ratio_protein_accessions";
     public static final String HIGHEST_RATIO_PEP_SEQUENCE = "highest_ratio_pep_sequences";
     public static final String NUMBER_OF_SPECTRA = "num_spectra";
+    public static final String TOTAL_NUMBER_OF_SPECTRA = "total_num_spectra";
+    public static final String NUMBER_OF_PROJECTS = "num_projects";
+    public static final String TOTAL_NUMBER_OF_PROJECTS = "total_num_projects";
+    public static final String NUMBER_OF_SPECIES = "num_species";
+    public static final String TOTAL_NUMBER_OF_SPECIES = "total_num_species";
+    public static final String NUMBER_OF_MODIFICATIONS = "num_modifications";
+    public static final String TOTAL_NUMBER_OF_MODIFICATIONS = "total_num_modifications";
     public static final String MAX_RATIO = "max_ratio";
     public static final String CLUSTER_QUALITY = "cluster_quality";
     public static final String AVG_PRECURSOR_CHARGE = "avg_precursor_charge";
@@ -23,6 +30,12 @@ public class ClusterFields {
     public static final String SPECIES_ASCENDANTS_ACCESSIONS = "species_ascendants_accessions";
     public static final String SPECIES_NAMES_AS_TEXT = "species_as_text";
     public static final String SPECIES_ASCENDANTS_NAMES_AS_TEXT = "species_ascendants_as_text";
+    public static final String MODIFICATION_NAMES = "modification_names";
+    public static final String MODIFICATION_ACCESSIONS = "modification_accessions";
+    public static final String MODIFICATION_ASCENDANTS_NAMES = "modification_ascendants_names";
+    public static final String MODIFICATION_ASCENDANTS_ACCESSIONS = "modification_ascendants_accessions";
+    public static final String MODIFICATION_NAMES_AS_TEXT = "modification_as_text";
+    public static final String MODIFICATION_ASCENDANTS_NAMES_AS_TEXT = "modification_ascendants_as_text";
     public static final String CONSENSUS_SPECTRUM_MZ = "consensus_spectrum_mz";
     public static final String CONSENSUS_SPECTRUM_MZ_MEAN = "consensus_spectrum_mz_mean_*";
     public static final String CONSENSUS_SPECTRUM_MZ_SEM = "consensus_spectrum_mz_sem";

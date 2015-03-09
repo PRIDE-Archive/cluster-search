@@ -27,6 +27,27 @@ public class SolrCluster {
     @Field(NUMBER_OF_SPECTRA)
     private long numberOfSpectra;
 
+    @Field(TOTAL_NUMBER_OF_SPECTRA)
+    private long totalNumberOfSpectra;
+
+    @Field(NUMBER_OF_PROJECTS)
+    private long numberOfProjects;
+
+    @Field(TOTAL_NUMBER_OF_PROJECTS)
+    private long totalNumberOfProjects;
+
+    @Field(NUMBER_OF_SPECIES)
+    private long numberOfSpecies;
+
+    @Field(TOTAL_NUMBER_OF_SPECIES)
+    private long totalNumberOfSpecies;
+
+    @Field(NUMBER_OF_MODIFICATIONS)
+    private long numberOfModifications;
+
+    @Field(TOTAL_NUMBER_OF_MODIFICATIONS)
+    private long totalNumberOfModifications;
+
     @Field(MAX_RATIO)
     private double maxRatio;
 
@@ -58,6 +79,18 @@ public class SolrCluster {
 
     @Field(SPECIES_ASCENDANTS_ACCESSIONS)
     private List<String> speciesAscendantsAccessions;
+
+    @Field(MODIFICATION_NAMES)
+    private List<String> modificationNames;
+
+    @Field(MODIFICATION_ACCESSIONS)
+    private List<String> modificationAccessions;
+
+    @Field(MODIFICATION_ASCENDANTS_NAMES)
+    private List<String> modificationAscendantsNames;
+
+    @Field(MODIFICATION_ASCENDANTS_ACCESSIONS)
+    private List<String> modificationAscendantsAccessions;
 
     @Field(CONSENSUS_SPECTRUM_MZ)
     private List<Double> consensusSpectrumMz;
@@ -91,6 +124,62 @@ public class SolrCluster {
 
     public void setNumberOfSpectra(long numberOfSpectra) {
         this.numberOfSpectra = numberOfSpectra;
+    }
+
+    public long getTotalNumberOfSpectra() {
+        return totalNumberOfSpectra;
+    }
+
+    public void setTotalNumberOfSpectra(long totalNumberOfSpectra) {
+        this.totalNumberOfSpectra = totalNumberOfSpectra;
+    }
+
+    public long getNumberOfProjects() {
+        return numberOfProjects;
+    }
+
+    public void setNumberOfProjects(long numberOfProjects) {
+        this.numberOfProjects = numberOfProjects;
+    }
+
+    public long getTotalNumberOfProjects() {
+        return totalNumberOfProjects;
+    }
+
+    public void setTotalNumberOfProjects(long totalNumberOfProjects) {
+        this.totalNumberOfProjects = totalNumberOfProjects;
+    }
+
+    public long getNumberOfSpecies() {
+        return numberOfSpecies;
+    }
+
+    public void setNumberOfSpecies(long numberOfSpecies) {
+        this.numberOfSpecies = numberOfSpecies;
+    }
+
+    public long getTotalNumberOfSpecies() {
+        return totalNumberOfSpecies;
+    }
+
+    public void setTotalNumberOfSpecies(long totalNumberOfSpecies) {
+        this.totalNumberOfSpecies = totalNumberOfSpecies;
+    }
+
+    public long getNumberOfModifications() {
+        return numberOfModifications;
+    }
+
+    public void setNumberOfModifications(long numberOfModifications) {
+        this.numberOfModifications = numberOfModifications;
+    }
+
+    public long getTotalNumberOfModifications() {
+        return totalNumberOfModifications;
+    }
+
+    public void setTotalNumberOfModifications(long totalNumberOfModifications) {
+        this.totalNumberOfModifications = totalNumberOfModifications;
     }
 
     public List<String> getHighestRatioPepSequences() {
@@ -207,6 +296,38 @@ public class SolrCluster {
 
     public void setSpeciesAscendantsAccessions(List<String> speciesAscendantsAccessions) {
         this.speciesAscendantsAccessions = speciesAscendantsAccessions;
+    }
+
+    public List<String> getModificationNames() {
+        return modificationNames;
+    }
+
+    public void setModificationNames(List<String> modificationNames) {
+        this.modificationNames = modificationNames;
+    }
+
+    public List<String> getModificationAccessions() {
+        return modificationAccessions;
+    }
+
+    public void setModificationAccessions(List<String> modificationAccessions) {
+        this.modificationAccessions = modificationAccessions;
+    }
+
+    public List<String> getModificationAscendantsNames() {
+        return modificationAscendantsNames;
+    }
+
+    public void setModificationAscendantsNames(List<String> modificationAscendantsNames) {
+        this.modificationAscendantsNames = modificationAscendantsNames;
+    }
+
+    public List<String> getModificationAscendantsAccessions() {
+        return modificationAscendantsAccessions;
+    }
+
+    public void setModificationAscendantsAccessions(List<String> modificationAscendantsAccessions) {
+        this.modificationAscendantsAccessions = modificationAscendantsAccessions;
     }
 
     public List<Double> getConsensusSpectrumMz() {
