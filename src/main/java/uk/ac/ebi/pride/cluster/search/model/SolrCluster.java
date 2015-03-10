@@ -86,12 +86,6 @@ public class SolrCluster {
     @Field(MODIFICATION_ACCESSIONS)
     private List<String> modificationAccessions;
 
-    @Field(MODIFICATION_ASCENDANTS_NAMES)
-    private List<String> modificationAscendantsNames;
-
-    @Field(MODIFICATION_ASCENDANTS_ACCESSIONS)
-    private List<String> modificationAscendantsAccessions;
-
     @Field(CONSENSUS_SPECTRUM_MZ)
     private List<Double> consensusSpectrumMz;
 
@@ -312,22 +306,6 @@ public class SolrCluster {
 
     public void setModificationAccessions(List<String> modificationAccessions) {
         this.modificationAccessions = modificationAccessions;
-    }
-
-    public List<String> getModificationAscendantsNames() {
-        return modificationAscendantsNames;
-    }
-
-    public void setModificationAscendantsNames(List<String> modificationAscendantsNames) {
-        this.modificationAscendantsNames = modificationAscendantsNames;
-    }
-
-    public List<String> getModificationAscendantsAccessions() {
-        return modificationAscendantsAccessions;
-    }
-
-    public void setModificationAscendantsAccessions(List<String> modificationAscendantsAccessions) {
-        this.modificationAscendantsAccessions = modificationAscendantsAccessions;
     }
 
     public List<Double> getConsensusSpectrumMz() {
