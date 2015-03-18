@@ -1,6 +1,8 @@
 package uk.ac.ebi.pride.cluster.search.model;
 
 import org.apache.solr.client.solrj.beans.Field;
+import uk.ac.ebi.pride.archive.dataprovider.identification.ModificationProvider;
+import uk.ac.ebi.pride.indexutils.helpers.ModificationHelper;
 
 import java.util.*;
 
@@ -80,10 +82,13 @@ public class SolrCluster {
     @Field(SPECIES_ASCENDANTS_ACCESSIONS)
     private List<String> speciesAscendantsAccessions;
 
-    @Field(MODIFICATION_NAMES)
+    @Field(MODIFICATIONS)
+    private List<String> modificationsAsString;
+
+    @Field(MOD_NAMES)
     private List<String> modificationNames;
 
-    @Field(MODIFICATION_ACCESSIONS)
+    @Field(MOD_ACCESSIONS)
     private List<String> modificationAccessions;
 
     @Field(CONSENSUS_SPECTRUM_MZ)
@@ -292,21 +297,62 @@ public class SolrCluster {
         this.speciesAscendantsAccessions = speciesAscendantsAccessions;
     }
 
-    public List<String> getModificationNames() {
-        return modificationNames;
-    }
+    public Iterable<ModificationProvider> getModifications() {
 
-    public void setModificationNames(List<String> modificationNames) {
-        this.modificationNames = modificationNames;
-    }
+            List<ModificationProvider> modifications = new ArrayList<ModificationProvider>();
 
-    public List<String> getModificationAccessions() {
-        return modificationAccessions;
-    }
+            if (modificationsAsString != null) {
+                for (String mod : modificationsAsString) {
+                    if(!mod.isEmpty()) {
+                        modifications.add(ModificationHelper.convertFromString(mod));
+                    }
+                }
+            }
 
-    public void setModificationAccessions(List<String> modificationAccessions) {
-        this.modificationAccessions = modificationAccessions;
-    }
+            return modifications;
+        }
+
+        public void setModifications(List<ModificationProvider> modifications) {
+
+            if (modifications == null )
+                return;
+
+            List<String> modificationsAsString = new ArrayList<String>();
+            List<String> modificationNames = new ArrayList<String>();
+            List<String> modificationAccessions = new ArrayList<String>();
+
+            for (ModificationProvider modification : modifications) {
+                modificationsAsString.add(ModificationHelper.convertToString(modification));
+                modificationAccessions.add(modification.getAccession());
+                modificationNames.add(modification.getName());
+            }
+
+            this.modificationsAsString = modificationsAsString;
+            this.modificationAccessions = modificationAccessions;
+            this.modificationNames = modificationNames;
+        }
+
+        public void addModification(ModificationProvider modification) {
+
+            if (modificationsAsString == null) {
+                modificationsAsString = new ArrayList<String>();
+            }
+
+            if (modificationAccessions == null) {
+                modificationAccessions = new ArrayList<String>();
+            }
+
+            if (modificationNames == null) {
+                modificationNames = new ArrayList<String>();
+            }
+
+            if (modification != null) {
+                modificationsAsString.add(ModificationHelper.convertToString(modification));
+                modificationAccessions.add(modification.getAccession());
+                modificationNames.add(modification.getName());
+            }
+        }
+
 
     public List<Double> getConsensusSpectrumMz() {
         return consensusSpectrumMz;
