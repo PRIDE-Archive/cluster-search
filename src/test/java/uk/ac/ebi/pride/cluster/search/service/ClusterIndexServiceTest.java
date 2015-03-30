@@ -16,11 +16,20 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.solr.core.SolrTemplate;
+import uk.ac.ebi.pride.archive.dataprovider.identification.ModificationProvider;
+import uk.ac.ebi.pride.cluster.search.model.ClusterFields;
 import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
+import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepositoryFactory;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterSpectralSearchRepository;
+import uk.ac.ebi.pride.indexutils.modifications.Modification;
+import uk.ac.ebi.pride.indexutils.results.PageWrapper;
 
 import java.io.IOException;
 import java.util.*;
+
+import static uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepository.HIGHLIGHT_POST_FRAGMENT;
+import static uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepository.HIGHLIGHT_PRE_FRAGMENT;
 
 public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
 
@@ -37,12 +46,26 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     private static final long NUM_SPECIES = 3;
     private static final long TOTAL_NUM_SPECIES = 4;
 
-    private static final long NUM_MODIFICATIONS = 10;
+    private static final long NUM_MODIFICATIONS = 2;
     private static final long TOTAL_NUM_MODIFICATIONS = 12;
 
+    //Modifications
+    private static final Integer MOD_1_POS = 3;
+    private static final Integer MOD_2_POS = 5;
+
+    private static final String MOD_1_ACCESSION = "MOD:00696";
+    private static final String MOD_2_ACCESSION = "MOD:00674";
+
+    private static final String MOD_1_NAME = "phosphorylated residue";
+    private static final String MOD_2_NAME = "amidated residue";
+
+    private static final String MOD_1_SYNONYM = "phosphorylation";
+    private static final String MOD_2_SYNONYM = "amidation";
+
+
     private static final double MAX_RATIO = 0.7;
-    private static final String PEP1 = "ABCDE";
-    private static final String PEP2 = "FGHL";
+    private static final String PEP1 = "ABCDEFG";
+    private static final String PEP2 = "HIJKLMN";
     private static final String PROT1 = "P12345";
     private static final String PROT2 = "P67890";
     private static final String PROJECT1 = "PXT000001";
@@ -86,6 +109,7 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     private SolrClusterSpectralSearchRepository solrClusterSpectralRepository;
 
     private SolrServer server;
+    ClusterSearchService clusterSearchService;
 
     @BeforeClass
     public static void initialise() throws Exception {
@@ -102,7 +126,9 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
 
         server = new EmbeddedSolrServer(h.getCoreContainer(), h.getCore().getName());
 
+        SolrClusterRepositoryFactory solrClusterRepositoryFactory = new SolrClusterRepositoryFactory(new SolrTemplate(server));
         solrClusterSpectralRepository = new SolrClusterSpectralSearchRepository(server);
+        clusterSearchService = new ClusterSearchService(solrClusterRepositoryFactory.create(), solrClusterSpectralRepository);
 
         // delete all data
         deleteAllData();
@@ -114,6 +140,45 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     public void tearDown() throws Exception {
         super.tearDown();
     }
+
+    @Test
+    public void testFindByHighestRatioPepSequencesHighlightsOnModificationNames() throws IOException, SolrServerException {
+
+
+        SolrCluster cluster1 = createCluster(CLUSTER_ID_1, AVG_PRECURSOR_MZ_1, createMzValuesSet1(), createIntensityValuesSet1());
+        save(cluster1);
+
+        Set<String> sequences = new HashSet<String>();
+        sequences.add(PEP1);
+
+        PageWrapper<SolrCluster> highlightPage =
+                clusterSearchService.findByHighestRatioPepSequencesHighlightsOnModificationNames(sequences, null, new PageRequest(0, 10));
+
+        assertNotNull(highlightPage);
+        assertEquals(1, highlightPage.getHighlights().size());
+        assertEquals(ClusterFields.HIGHEST_RATIO_PEP_SEQUENCE, highlightPage.getHighlights().entrySet().iterator().next().getValue().entrySet().iterator().next().getKey());
+        assertEquals(HIGHLIGHT_PRE_FRAGMENT + PEP1 + HIGHLIGHT_POST_FRAGMENT, highlightPage.getHighlights().entrySet().iterator().next().getValue().entrySet().iterator().next().getValue().get(0));
+    }
+
+    @Test
+    public void testFindByHighestRatioPepSequencesFacetOnModificationNames() throws IOException, SolrServerException {
+
+
+        SolrCluster cluster1 = createCluster(CLUSTER_ID_1, AVG_PRECURSOR_MZ_1, createMzValuesSet1(), createIntensityValuesSet1());
+        save(cluster1);
+
+        Set<String> sequences = new HashSet<String>();
+        sequences.add(PEP1);
+
+        Map<String, Long> modificationsCount = clusterSearchService.findByHighestRatioPepSequencesFacetOnModificationNames(sequences, null);
+
+        assertNotNull(modificationsCount);
+        assertEquals(2, modificationsCount.size());
+        assertEquals((Long) 1L, modificationsCount.get(MOD_1_NAME));
+        assertEquals((Long) 1L, modificationsCount.get(MOD_2_NAME));
+
+    }
+
 
     @Test
     public void testFindByNearestPeaks() throws IOException, SolrServerException {
@@ -162,6 +227,23 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
         cluster.setClusterQuality("HIGH");
         cluster.setHighestRatioPepSequences(pepSequences);
         cluster.setHighestRatioProteinAccessions(proteinAccs);
+
+        Modification mod1 = new Modification();
+        mod1.addPosition(MOD_1_POS, null);
+        mod1.setAccession(MOD_1_ACCESSION);
+        mod1.setName(MOD_1_NAME);
+
+        Modification mod2 = new Modification();
+        mod2.addPosition(MOD_2_POS, null);
+        mod2.setAccession(MOD_2_ACCESSION);
+        mod2.setName(MOD_2_NAME);
+
+        List<ModificationProvider> modifications = new LinkedList<ModificationProvider>();
+        modifications.add(mod1);
+        modifications.add(mod2);
+
+        cluster.setModifications(modifications);
+
         cluster.setMaxRatio(MAX_RATIO);
         cluster.setNumberOfSpectra(NUM_SPECTRA);
         cluster.setTotalNumberOfSpectra(TOTAL_NUM_SPECTRA);
