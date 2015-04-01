@@ -1,13 +1,20 @@
 package uk.ac.ebi.pride.cluster.search.service;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.solr.core.query.result.FacetFieldEntry;
+import org.springframework.data.solr.core.query.result.FacetPage;
 import org.springframework.stereotype.Service;
+import uk.ac.ebi.pride.cluster.search.model.ClusterFields;
 import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepository;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterSpectralSearchRepository;
+import uk.ac.ebi.pride.indexutils.results.PageWrapper;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * @author Jose A Dianes <jdianes@ebi.ac.uk>
@@ -38,6 +45,40 @@ public class ClusterSearchService implements IClusterSearchService {
     @Override
     public Page<SolrCluster> findByHighestRatioPepSequences(Set<String> sequences, Pageable pageable) {
         return solrClusterRepository.findByHighestRatioPepSequences(sequences, pageable);
+    }
+
+    @Override
+    public PageWrapper<SolrCluster> findByHighestRatioPepSequencesHighlightsOnModificationNames(
+            Set<String> sequences, Set<String> modNameFilters, Pageable pageable) {
+
+        PageWrapper<SolrCluster> clusters;
+
+        if (modNameFilters == null || modNameFilters.isEmpty()) {
+            clusters = new PageWrapper<SolrCluster>(solrClusterRepository.findByHighestRatioPepSequencesHighlights(sequences, pageable));
+        } else
+            clusters = new PageWrapper<SolrCluster>(solrClusterRepository.findByHighestRatioPepSequencesAndHighlightsAndFilterModNames(sequences, modNameFilters, pageable));
+
+        return clusters;
+    }
+
+    @Override
+    public Map<String, Long> findByHighestRatioPepSequencesFacetOnModificationNames(Set<String> sequences, Set<String> modNameFilters) {
+
+        Map<String, Long> modificationsCount = new TreeMap<String, Long>();
+        FacetPage<SolrCluster> clusters;
+
+        if (modNameFilters == null || modNameFilters.isEmpty()) {
+            clusters = solrClusterRepository.findByHighestRatioPepSequencesFacetModNames(sequences, new PageRequest(0, 1));
+        } else
+            clusters = solrClusterRepository.findByHighestRatioPepSequencesFacetAndFilterModNames(sequences, modNameFilters, new PageRequest(0, 1));
+
+
+        if (clusters != null) {
+            for (FacetFieldEntry facetFieldEntry : clusters.getFacetResultPage(ClusterFields.MOD_NAMES)) {
+                modificationsCount.put(facetFieldEntry.getValue(), facetFieldEntry.getValueCount());
+            }
+        }
+        return modificationsCount;
     }
 
     @Override
