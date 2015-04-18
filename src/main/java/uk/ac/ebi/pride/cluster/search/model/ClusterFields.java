@@ -42,4 +42,5 @@ public class ClusterFields {
     public static final String CONSENSUS_SPECTRUM_INTENSITY = "consensus_spectrum_intensity";
     public static final String CONSENSUS_SPECTRUM_INTENSITY_MEAN = "consensus_spectrum_intensity_mean_*";
     public static final String CONSENSUS_SPECTRUM_INTENSITY_SEM = "consensus_spectrum_intensity_sem";
+    public static final String TEXT = "text";
 }
