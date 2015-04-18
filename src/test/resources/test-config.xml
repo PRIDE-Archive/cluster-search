@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:solr="http://www.springframework.org/schema/data/solr"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/data/solr http://www.springframework.org/schema/data/solr/spring-solr.xsd">
+
+       <!--<solr:embedded-solr-server id="solrServer" solrHome="classpath:solr" />-->
+
+       <bean id="solrServerFactory" class="org.springframework.data.solr.server.support.EmbeddedSolrServerFactory">
+              <constructor-arg name="solrHome" value="classpath:solr"/>
+       </bean>
+
+       <bean id="solrTemplate" class="org.springframework.data.solr.core.SolrTemplate" scope="singleton">
+              <constructor-arg ref="solrServerFactory" />
+       </bean>
+
+       <bean id="solrClusterRepositoryFactory" class="uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepositoryFactory">
+              <constructor-arg ref="solrTemplate"/>
+       </bean>
+
+       <!--repositories that require manual creation-->
+       <bean id="solrClusterSpectralSearchRepository" class="uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterSpectralSearchRepository">
+              <constructor-arg value="#{ solrServerFactory.getSolrServer()}"/>
+       </bean>
+
+       <!-- Search Services -->
+       <bean id="clusterSearchService" class="uk.ac.ebi.pride.cluster.search.service.ClusterSearchService">
+              <constructor-arg value="#{ solrClusterRepositoryFactory.create() }"/>
+              <constructor-arg ref="solrClusterSpectralSearchRepository"/>
+       </bean>
+</beans>

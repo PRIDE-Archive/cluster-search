@@ -6,21 +6,21 @@ package uk.ac.ebi.pride.cluster.search.service;
  * @version $Id$
  */
 
-import org.apache.solr.SolrTestCaseJ4;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.solr.core.SolrTemplate;
+import org.springframework.data.solr.core.query.SimpleQuery;
+import org.springframework.data.solr.core.query.SimpleStringCriteria;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.pride.archive.dataprovider.identification.ModificationProvider;
 import uk.ac.ebi.pride.cluster.search.model.ClusterFields;
 import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
-import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepositoryFactory;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterSpectralSearchRepository;
 import uk.ac.ebi.pride.indexutils.modifications.Modification;
 import uk.ac.ebi.pride.indexutils.results.PageWrapper;
@@ -28,10 +28,13 @@ import uk.ac.ebi.pride.indexutils.results.PageWrapper;
 import java.io.IOException;
 import java.util.*;
 
+import static junit.framework.Assert.*;
 import static uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepository.HIGHLIGHT_POST_FRAGMENT;
 import static uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepository.HIGHLIGHT_PRE_FRAGMENT;
 
-public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:test-config.xml")
+public class ClusterIndexServiceTest {
 
     private static final long CLUSTER_ID_1 = 1;
     private static final long CLUSTER_ID_2 = 2;
@@ -106,53 +109,74 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     private static final double TEST_INTENSITY_MEAN_7 = 7000.0;
     private static final double TEST_MZ_MEAN_7 = 700.0;
 
+    @Autowired
     private SolrClusterSpectralSearchRepository solrClusterSpectralRepository;
 
-    private SolrServer server;
+    @Autowired
+    SolrTemplate solrOperations;
+
+    @Autowired
     ClusterSearchService clusterSearchService;
 
-    @BeforeClass
-    public static void initialise() throws Exception {
-        initCore("solr/cluster-index/conf/solrconfig.xml",
-                "solr/cluster-index/conf/schema.xml",
-                "solr",
-                "cluster-index");
-    }
+//    @BeforeClass
+//    public static void initialise() throws Exception {
+//        initCore("solr/cluster-index/conf/solrconfig.xml",
+//                "solr/cluster-index/conf/schema.xml",
+//                "solr",
+//                "cluster-index");
+//    }
+//
+//    @Before
+//    @Override
+//    public void setUp() throws Exception {
+//        super.setUp();
+//
+//        server = new EmbeddedSolrServer(h.getCoreContainer(), h.getCore().getName());
+//        solrTemplate = new SolrTemplate(server);
+//
+//        SolrClusterRepositoryFactory solrClusterRepositoryFactory = new SolrClusterRepositoryFactory(solrTemplate);
+//        solrClusterSpectralRepository = new SolrClusterSpectralSearchRepository(server);
+//        clusterSearchService = new ClusterSearchService(solrClusterRepositoryFactory.create(), solrClusterSpectralRepository);
+//
+//        // delete all data
+//        deleteAllData();
+//
+//    }
+//
+//    @After
+//    @Override
+//    public void tearDown() throws Exception {
+//        super.tearDown();
+//    }
 
-    @Before
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
 
-        server = new EmbeddedSolrServer(h.getCoreContainer(), h.getCore().getName());
+//
+//    @Before
+//    public void setUp() {
+        // Create new repository instance using Factory and inject custom implementation
+//        SolrClusterRepository repo = new SolrRepositoryFactory(this.solrOperations).getRepository(SolrClusterRepository.class,
+//                new SolrClusterRepositoryImpl(this.solrOperations));
+//        solrClusterSpectralRepository = new SolrClusterSpectralSearchRepository(serverFactory.getSolrServer());
+//        clusterSearchService = new ClusterSearchService(repo, solrClusterSpectralRepository);
 
-        SolrClusterRepositoryFactory solrClusterRepositoryFactory = new SolrClusterRepositoryFactory(new SolrTemplate(server));
-        solrClusterSpectralRepository = new SolrClusterSpectralSearchRepository(server);
-        clusterSearchService = new ClusterSearchService(solrClusterRepositoryFactory.create(), solrClusterSpectralRepository);
-
-        // delete all data
-        deleteAllData();
-
-    }
+//    }
 
     @After
-    @Override
-    public void tearDown() throws Exception {
-        super.tearDown();
+    public void tearDown() {
+        solrOperations.delete(new SimpleQuery(new SimpleStringCriteria("*:*")));
+        solrOperations.commit();
     }
 
     @Test
-    public void testFindByHighestRatioPepSequencesHighlightsOnModificationNames() throws IOException, SolrServerException {
+    public void testFindByTextAndHighestRatioPepSequencesHighlightsOnModificationNames() throws IOException, SolrServerException {
 
 
         SolrCluster cluster1 = createCluster(CLUSTER_ID_1, AVG_PRECURSOR_MZ_1, createMzValuesSet1(), createIntensityValuesSet1());
         save(cluster1);
 
-        Set<String> sequences = new HashSet<String>();
-        sequences.add(PEP1);
-
         PageWrapper<SolrCluster> highlightPage =
-                clusterSearchService.findByHighestRatioPepSequencesHighlightsOnModificationNames(sequences, null, new PageRequest(0, 10));
+                clusterSearchService.findByTextAndHighestRatioPepSequencesHighlightsFilterOnModificationNamesAndSpeciesNames(
+                        PEP1, null, null, null, new PageRequest(0, 10));
 
         assertNotNull(highlightPage);
         assertEquals(1, highlightPage.getHighlights().size());
@@ -161,21 +185,19 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     }
 
     @Test
-    public void testFindByHighestRatioPepSequencesFacetOnModificationNames() throws IOException, SolrServerException {
+    public void testFindByTextAndHighestRatioPepSequencesFacetOnModificationNames() throws IOException, SolrServerException {
 
 
         SolrCluster cluster1 = createCluster(CLUSTER_ID_1, AVG_PRECURSOR_MZ_1, createMzValuesSet1(), createIntensityValuesSet1());
         save(cluster1);
 
-        Set<String> sequences = new HashSet<String>();
-        sequences.add(PEP1);
-
-        Map<String, Long> modificationsCount = clusterSearchService.findByHighestRatioPepSequencesFacetOnModificationNames(sequences, null);
+        Map<String, Map<String, Long>> modificationsCount = clusterSearchService.findByTextAndHighestRatioPepSequencesFacetOnModificationNamesAndSpeciesNames(
+                PEP1, null, null, null);
 
         assertNotNull(modificationsCount);
-        assertEquals(2, modificationsCount.size());
-        assertEquals((Long) 1L, modificationsCount.get(MOD_1_NAME));
-        assertEquals((Long) 1L, modificationsCount.get(MOD_2_NAME));
+        assertEquals(2, modificationsCount.get(ClusterFields.MOD_NAMES).size());
+        assertEquals((Long) 1L, modificationsCount.get(ClusterFields.MOD_NAMES).get(MOD_1_NAME));
+        assertEquals((Long) 1L, modificationsCount.get(ClusterFields.MOD_NAMES).get(MOD_2_NAME));
 
     }
 
@@ -201,13 +223,15 @@ public class ClusterIndexServiceTest extends SolrTestCaseJ4 {
     }
 
     private void save(SolrCluster cluster) throws IOException, SolrServerException {
-        server.addBean(cluster);
-        server.commit();
+        solrOperations.saveBean(cluster);
+        solrOperations.commit();
+//        server.addBean(cluster);
+//        server.commit();
     }
 
-    private void deleteAllData() throws IOException, SolrServerException {
-        server.deleteByQuery("*:*");
-    }
+//    private void deleteAllData() throws IOException, SolrServerException {
+//        server.deleteByQuery("*:*");
+//    }
 
     private SolrCluster createCluster(long clusterId, double precursorMz, double[] mzValues, double[] intensityValues) {
 

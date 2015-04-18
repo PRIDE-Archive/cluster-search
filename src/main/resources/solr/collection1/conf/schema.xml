@@ -149,9 +149,9 @@
 
         <!-- catchall field, containing all other searchable text fields (implemented
              via copyField further on in this schema  -->
-        <!--<field name="text" type="text_general" indexed="true" stored="false" multiValued="true"/>-->
+        <field name="text" type="text_general" indexed="true" stored="false" multiValued="true"/>
         <!-- only create tokens on whitespace -->
-        <field name="text" type="text_ws" indexed="true" stored="false" multiValued="true"/>
+        <!--<field name="text" type="text_ws" indexed="true" stored="false" multiValued="true"/>-->
 
         <field name="payloads" type="payloads" indexed="true" stored="true"/>
 
@@ -244,15 +244,18 @@
     <copyField source="id" dest="text" />
     <copyField source="project_assays" dest="text" />
     <copyField source="cluster_quality" dest="text" />
-    <copyField source="id" dest="text" />
+    <copyField source="highest_ratio_pep_sequences" dest="text" />
+    <copyField source="highest_ratio_protein_accessions" dest="text" />
+    <copyField source="species_as_text" dest="text"/>
+    <copyField source="modifications" dest="text" />
+    <copyField source="mod_names_as_text" dest="text" />
+    <copyField source="mod_accessions_as_text" dest="text" />
 
     <copyField source="cluster_quality" dest="cluster_quality_as_text"/>
 
     <copyField source="species_names" dest="species_as_text"/>
     <copyField source="species_ascendants_names" dest="species_ascendants_as_text"/>
 
-    <copyField source="modifications" dest="text" />
-    <copyField source="mod_names" dest="text" />
     <copyField source="mod_accessions" dest="mod_accessions_as_text" />
     <copyField source="mod_accessions" dest="mod_synonyms" />
     <copyField source="mod_names" dest="mod_names_as_text" />

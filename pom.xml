@@ -46,7 +46,7 @@
         <!--<spring-test.version>4.1.1.RELEASE</spring-test.version>-->
         <pride.index.utils.version>0.1.2-SNAPSHOT</pride.index.utils.version>
         <spring.data.solr.version>1.2.5.RELEASE</spring.data.solr.version>
-        <!--With version 1.3.1 of spring data in advance the test doesn't start (null pointer exveption)-->
+        <!--With version 1.3.1 of spring data in advance the test doesn't start (null pointer exception)-->
         <!-- TODO: Investigate version conflict-->
         <!--<spring.data.solr.version>1.3.1.RELEASE</spring-data-solr.version>-->
     </properties>
@@ -144,6 +144,13 @@
                     <artifactId>httpclient</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <!-- spring-data solr-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
         <!--SolrJ-->
