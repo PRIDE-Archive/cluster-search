@@ -109,6 +109,10 @@ public class SolrCluster {
     @Field(CONSENSUS_SPECTRUM_INTENSITY_MEAN)
     private Map<String, Double> consensusSpectrumIntensityMeans = new HashMap<String, Double>();
 
+    //ReadOnly
+    @Field(TEXT)
+    private List<String> text;
+
     public long getId() {
         return id;
     }
@@ -433,5 +437,13 @@ public class SolrCluster {
 
     public void setConsensusSpectrumIntensitySem(double consensusSpectrumIntensitySem) {
         this.consensusSpectrumIntensitySem = consensusSpectrumIntensitySem;
+    }
+
+    public List<String> getText() {
+        return text;
+    }
+
+    public void setText(List<String> text) {
+        this.text = text;
     }
 }

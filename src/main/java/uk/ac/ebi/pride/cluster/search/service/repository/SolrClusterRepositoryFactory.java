@@ -1,6 +1,6 @@
 package uk.ac.ebi.pride.cluster.search.service.repository;
 
-import org.springframework.data.solr.core.SolrOperations;
+import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.repository.support.SolrRepositoryFactory;
 
 /**
@@ -8,13 +8,15 @@ import org.springframework.data.solr.repository.support.SolrRepositoryFactory;
  *
  */
 public class SolrClusterRepositoryFactory {
-    private SolrOperations solrOperations;
+    private SolrTemplate solrTemplate;
 
-    public SolrClusterRepositoryFactory(SolrOperations solrOperations) {
-        this.solrOperations = solrOperations;
+    public SolrClusterRepositoryFactory(SolrTemplate solrTemplate) {
+        this.solrTemplate = solrTemplate;
     }
 
     public SolrClusterRepository create() {
-        return new SolrRepositoryFactory(this.solrOperations).getRepository(SolrClusterRepository.class);
+        return new SolrRepositoryFactory(this.solrTemplate).getRepository(
+                SolrClusterRepository.class,
+                new SolrClusterRepositoryImpl(this.solrTemplate));
     }
 }

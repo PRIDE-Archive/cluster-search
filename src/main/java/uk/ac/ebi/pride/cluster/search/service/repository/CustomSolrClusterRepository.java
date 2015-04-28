@@ -1,25 +1,18 @@
-package uk.ac.ebi.pride.cluster.search.service;
+package uk.ac.ebi.pride.cluster.search.service.repository;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.solr.core.query.result.FacetPage;
+import org.springframework.data.solr.core.query.result.HighlightPage;
 import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
-import uk.ac.ebi.pride.indexutils.results.PageWrapper;
 
-import java.util.Map;
 import java.util.Set;
 
 /**
  * @author ntoro
- * @author Jose A. Dianes <jdianes@ebi.ac.uk>
- *
+ * @since 06/04/15 19:43
  */
-public interface IClusterSearchService {
 
-    Page<SolrCluster> findAll(Pageable pageable);
-
-    SolrCluster findById(Long id);
-
-    Page<SolrCluster> findByHighestRatioPepSequences(Set<String> sequences, Pageable pageable);
+public interface CustomSolrClusterRepository {
 
     /**
      * Return filtered clusters (or not) by modifications names and species names and peptides with the highlights for sequences
@@ -27,10 +20,9 @@ public interface IClusterSearchService {
      * @param sequenceFilters (peptide sequences to filter by) optional
      * @param modNameFilters (modification names to filter by) optional
      * @param speciesNameFilters (species names to filter by) optional
-     * @param pageable requested page
-     * @return A page with the clusters and the highlights snippets
+     * @param pageable requested page    @return A page with the clusters and the highlights snippets
      */
-    PageWrapper<SolrCluster> findByTextAndHighestRatioPepSequencesHighlightsFilterOnModificationNamesAndSpeciesNames(
+    HighlightPage<SolrCluster> findByTextAndHighestRatioPepSequencesFilterOnModificationNamesAndSpeciesNames(
             String query,
             Set<String> sequenceFilters,
             Set<String> modNameFilters,
@@ -45,13 +37,9 @@ public interface IClusterSearchService {
      * @param speciesNameFilters (species names to filter by) optional
      * @return a map per facet field with the names and the number of hits per name
      */
-    Map<String, Map<String, Long>> findByTextAndHighestRatioPepSequencesFacetOnModificationNamesAndSpeciesNames(
+    FacetPage<SolrCluster> findByTextAndHighestRatioPepSequencesFacetOnModificationNamesAndSpeciesNames(
             String query,
             Set<String> sequenceFilters,
             Set<String> modNameFilters,
             Set<String> speciesNameFilters);
-
-    Page<SolrCluster> findByNearestPeaks(String quality, double precursorMz, double windowSize, double[] mzValues, double[] intensityValues, Pageable pageable);
-
-    boolean existsCluster(Long clusterId);
 }

@@ -1,7 +1,6 @@
 package uk.ac.ebi.pride.cluster.search.service;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.solr.core.query.result.FacetFieldEntry;
 import org.springframework.data.solr.core.query.result.FacetPage;
@@ -12,13 +11,14 @@ import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepository;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterSpectralSearchRepository;
 import uk.ac.ebi.pride.indexutils.results.PageWrapper;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 /**
  * @author Jose A Dianes <jdianes@ebi.ac.uk>
- * @author ntoro
+ * @author ntoro <ntoro@ebi.ac.uk>
  */
 
 @Service
@@ -26,6 +26,7 @@ public class ClusterSearchService implements IClusterSearchService {
 
     private SolrClusterRepository solrClusterRepository;
     private SolrClusterSpectralSearchRepository solrClusterSpectralSearchRepository;
+
 
     public ClusterSearchService(SolrClusterRepository solrClusterRepository, SolrClusterSpectralSearchRepository solrClusterSpectralSearchRepository) {
         this.solrClusterRepository = solrClusterRepository;
@@ -48,51 +49,76 @@ public class ClusterSearchService implements IClusterSearchService {
     }
 
     @Override
-    public PageWrapper<SolrCluster> findByHighestRatioPepSequencesHighlightsOnModificationNames(
-            Set<String> sequences, Set<String> modNameFilters, Pageable pageable) {
-
-        PageWrapper<SolrCluster> clusters;
-
-        if (modNameFilters == null || modNameFilters.isEmpty()) {
-            clusters = new PageWrapper<SolrCluster>(solrClusterRepository.findByHighestRatioPepSequencesHighlights(sequences, pageable));
-        } else
-            clusters = new PageWrapper<SolrCluster>(solrClusterRepository.findByHighestRatioPepSequencesAndHighlightsAndFilterModNames(sequences, modNameFilters, pageable));
-
-        return clusters;
+    public PageWrapper<SolrCluster> findByTextAndHighestRatioPepSequencesHighlightsFilterOnModificationNamesAndSpeciesNames(
+            String query,
+            Set<String> sequenceFilters,
+            Set<String> modNameFilters,
+            Set<String> speciesNameFilters,
+            Pageable pageable) {
+        return new PageWrapper<SolrCluster>(solrClusterRepository.findByTextAndHighestRatioPepSequencesFilterOnModificationNamesAndSpeciesNames(
+                query,
+                sequenceFilters,
+                modNameFilters,
+                speciesNameFilters,
+                pageable)
+        );
     }
 
     @Override
-    public Map<String, Long> findByHighestRatioPepSequencesFacetOnModificationNames(Set<String> sequences, Set<String> modNameFilters) {
+    public Map<String, Map<String, Long>> findByTextAndHighestRatioPepSequencesFacetOnModificationNamesAndSpeciesNames(
+            String query,
+            Set<String> sequenceFilters,
+            Set<String> modNameFilters,
+            Set<String> speciesNameFilters) {
 
-        Map<String, Long> modificationsCount = new TreeMap<String, Long>();
+        Map<String, Map<String, Long>> facets = new HashMap<String, Map<String, Long>>();
+
         FacetPage<SolrCluster> clusters;
 
-        if (modNameFilters == null || modNameFilters.isEmpty()) {
-            clusters = solrClusterRepository.findByHighestRatioPepSequencesFacetModNames(sequences, new PageRequest(0, 1));
-        } else
-            clusters = solrClusterRepository.findByHighestRatioPepSequencesFacetAndFilterModNames(sequences, modNameFilters, new PageRequest(0, 1));
-
+        clusters = solrClusterRepository.findByTextAndHighestRatioPepSequencesFacetOnModificationNamesAndSpeciesNames(
+                query,
+                sequenceFilters,
+                modNameFilters,
+                speciesNameFilters);
 
         if (clusters != null) {
+            //Species
+            Map<String, Long> species = new LinkedHashMap<String, Long>();  //InsertionOrdered
+
+            for (FacetFieldEntry facetFieldEntry : clusters.getFacetResultPage(ClusterFields.SPECIES_NAMES)) {
+                species.put(facetFieldEntry.getValue(), facetFieldEntry.getValueCount());
+            }
+            if (!species.isEmpty()) {
+                facets.put(ClusterFields.SPECIES_NAMES, species);
+            }
+
+            //Modifications
+            Map<String, Long> modifications = new LinkedHashMap<String, Long>();  //InsertionOrdered
             for (FacetFieldEntry facetFieldEntry : clusters.getFacetResultPage(ClusterFields.MOD_NAMES)) {
-                modificationsCount.put(facetFieldEntry.getValue(), facetFieldEntry.getValueCount());
+                modifications.put(facetFieldEntry.getValue(), facetFieldEntry.getValueCount());
+            }
+            if (!modifications.isEmpty()) {
+                facets.put(ClusterFields.MOD_NAMES, modifications);
             }
         }
-        return modificationsCount;
+
+        return facets;
+
     }
+
 
     @Override
     public Page<SolrCluster> findByNearestPeaks(String quality, double precursorMz, double windowSize, double[] mzValues, double[] intensityValues, Pageable pageable) {
-        assert(mzValues != null): "MZ values are needed";
-        assert(intensityValues != null): "Intensity values are needed";
-        assert(mzValues.length == intensityValues.length): "Same number of MZ and Intensity are needed";
+        assert (mzValues != null) : "MZ values are needed";
+        assert (intensityValues != null) : "Intensity values are needed";
+        assert (mzValues.length == intensityValues.length) : "Same number of MZ and Intensity are needed";
 
         return solrClusterSpectralSearchRepository.findByNearestPeaks(quality, precursorMz, windowSize, mzValues, intensityValues, pageable);
     }
 
 
     @Override
-    public boolean existsCluster(Long clusterId){
+    public boolean existsCluster(Long clusterId) {
         return solrClusterRepository.exists(clusterId);
     }
 
