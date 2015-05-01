@@ -10,6 +10,7 @@ import java.util.Set;
 /**
  * @author ntoro
  * @since 06/04/15 19:43
+ *
  */
 
 public interface CustomSolrClusterRepository {

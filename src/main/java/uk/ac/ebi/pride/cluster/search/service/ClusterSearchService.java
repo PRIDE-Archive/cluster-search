@@ -55,6 +55,7 @@ public class ClusterSearchService implements IClusterSearchService {
             Set<String> modNameFilters,
             Set<String> speciesNameFilters,
             Pageable pageable) {
+
         return new PageWrapper<SolrCluster>(solrClusterRepository.findByTextAndHighestRatioPepSequencesFilterOnModificationNamesAndSpeciesNames(
                 query,
                 sequenceFilters,
@@ -73,9 +74,7 @@ public class ClusterSearchService implements IClusterSearchService {
 
         Map<String, Map<String, Long>> facets = new HashMap<String, Map<String, Long>>();
 
-        FacetPage<SolrCluster> clusters;
-
-        clusters = solrClusterRepository.findByTextAndHighestRatioPepSequencesFacetOnModificationNamesAndSpeciesNames(
+        FacetPage<SolrCluster> clusters = solrClusterRepository.findByTextAndHighestRatioPepSequencesFacetOnModificationNamesAndSpeciesNames(
                 query,
                 sequenceFilters,
                 modNameFilters,
@@ -94,11 +93,11 @@ public class ClusterSearchService implements IClusterSearchService {
 
             //Modifications
             Map<String, Long> modifications = new LinkedHashMap<String, Long>();  //InsertionOrdered
-            for (FacetFieldEntry facetFieldEntry : clusters.getFacetResultPage(ClusterFields.MOD_NAMES)) {
+            for (FacetFieldEntry facetFieldEntry : clusters.getFacetResultPage(ClusterFields.MOD_SYNONYMS)) {
                 modifications.put(facetFieldEntry.getValue(), facetFieldEntry.getValueCount());
             }
             if (!modifications.isEmpty()) {
-                facets.put(ClusterFields.MOD_NAMES, modifications);
+                facets.put(ClusterFields.MOD_SYNONYMS, modifications);
             }
         }
 

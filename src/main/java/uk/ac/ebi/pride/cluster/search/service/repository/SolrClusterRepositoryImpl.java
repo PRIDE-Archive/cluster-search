@@ -66,7 +66,7 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
 
         Criteria conditions = createSearchConditions(query);
         List<FilterQuery> filterQueries = createFilterQuery(sequenceFilters, modNameFilters, speciesNameFilters);
-        FacetOptions facetOptions = new FacetOptions(ClusterFields.MOD_NAMES, ClusterFields.SPECIES_NAMES);
+        FacetOptions facetOptions = new FacetOptions(ClusterFields.MOD_SYNONYMS, ClusterFields.SPECIES_NAMES);
         facetOptions.setFacetLimit(FACET_MIN_COUNT);
 
         SimpleFacetQuery search = new SimpleFacetQuery(conditions);
@@ -77,12 +77,12 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
 
         }
         search.setFacetOptions(facetOptions);
-        search.setPageRequest(new PageRequest(0,1)); //We are only interesting in the facets, not in the query result
+        search.setPageRequest(new PageRequest(0, 1)); //We are only interesting in the facets, not in the query result
 
         return solrTemplate.queryForFacetPage(search, SolrCluster.class);
     }
 
-    static private Criteria createSearchConditions(String searchTerms) {
+    private Criteria createSearchConditions(String searchTerms) {
         Criteria conditions = null;
 
         //Query
@@ -98,8 +98,7 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
                             .or(new Criteria(ClusterFields.HIGHEST_RATIO_PEP_SEQUENCE).is(word));
                 }
             }
-        }
-        else{
+        } else {
             //Default Criteria
             conditions = new Criteria(ClusterFields.TEXT).or(new Criteria(ClusterFields.HIGHEST_RATIO_PEP_SEQUENCE));
         }
@@ -107,14 +106,14 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
         return conditions;
     }
 
-    static private List<FilterQuery> createFilterQuery(Set<String> sequences, Set<String> modNameFilters, Set<String> speciesNameFilters) {
+    private List<FilterQuery> createFilterQuery(Set<String> sequences, Set<String> modNameFilters, Set<String> speciesNameFilters) {
         List<FilterQuery> filterQueries = new ArrayList<FilterQuery>();
 
         //Sequences filter
         createFilterCriteria(sequences, ClusterFields.HIGHEST_RATIO_PEP_SEQUENCE, filterQueries);
 
         //Modifications filter
-        createFilterCriteria(modNameFilters, ClusterFields.MOD_NAMES, filterQueries);
+        createFilterCriteria(modNameFilters, ClusterFields.MOD_SYNONYMS, filterQueries);
 
         //Species filter
         createFilterCriteria(speciesNameFilters, ClusterFields.SPECIES_NAMES, filterQueries);
@@ -122,7 +121,7 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
         return filterQueries;
     }
 
-    static private void createFilterCriteria(Set<String> values, String field, List<FilterQuery> filterQueries) {
+    private void createFilterCriteria(Set<String> values, String field, List<FilterQuery> filterQueries) {
 
         if (values != null) {
             Criteria conditions = null;
