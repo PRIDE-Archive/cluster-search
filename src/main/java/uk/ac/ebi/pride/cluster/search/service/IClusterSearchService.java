@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.cluster.search.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
 import uk.ac.ebi.pride.indexutils.results.PageWrapper;
 
@@ -27,6 +28,7 @@ public interface IClusterSearchService {
      * @param sequenceFilters (peptide sequences to filter by) optional
      * @param modNameFilters (modification names to filter by) optional
      * @param speciesNameFilters (species names to filter by) optional
+     * @param sort (sorting order) optional
      * @param pageable requested page
      * @return A page with the clusters and the highlights snippets
      */
@@ -35,6 +37,7 @@ public interface IClusterSearchService {
             Set<String> sequenceFilters,
             Set<String> modNameFilters,
             Set<String> speciesNameFilters,
+            Sort sort,
             Pageable pageable);
 
     /**

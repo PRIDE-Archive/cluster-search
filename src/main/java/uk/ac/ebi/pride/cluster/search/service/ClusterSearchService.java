@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.cluster.search.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.solr.core.query.result.FacetFieldEntry;
 import org.springframework.data.solr.core.query.result.FacetPage;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,7 @@ public class ClusterSearchService implements IClusterSearchService {
             Set<String> sequenceFilters,
             Set<String> modNameFilters,
             Set<String> speciesNameFilters,
+            Sort sort,
             Pageable pageable) {
 
         return new PageWrapper<SolrCluster>(solrClusterRepository.findByTextAndHighestRatioPepSequencesFilterOnModificationNamesAndSpeciesNames(
@@ -61,6 +63,7 @@ public class ClusterSearchService implements IClusterSearchService {
                 sequenceFilters,
                 modNameFilters,
                 speciesNameFilters,
+                sort,
                 pageable)
         );
     }

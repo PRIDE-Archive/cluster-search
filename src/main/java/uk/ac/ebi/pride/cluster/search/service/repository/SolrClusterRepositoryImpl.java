@@ -2,6 +2,7 @@ package uk.ac.ebi.pride.cluster.search.service.repository;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.*;
 import org.springframework.data.solr.core.query.result.FacetPage;
@@ -21,7 +22,14 @@ import java.util.Set;
 @Repository
 public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
 
+    // default minimum counts for faceting
     public static final int FACET_MIN_COUNT = 10000;
+
+    // default sorting for the query results
+    public static final Sort DEFAULT_QUERY_SORT = new Sort(Sort.Direction.DESC, ClusterFields.NUMBER_OF_SPECTRA)
+                                                        .and(new Sort(Sort.Direction.DESC, ClusterFields.MAX_RATIO))
+                                                        .and(new Sort(Sort.Direction.DESC, ClusterFields.NUMBER_OF_PROJECTS));
+
     private SolrTemplate solrTemplate;
 
 
@@ -34,24 +42,40 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
             Set<String> sequences,
             Set<String> modNameFilters,
             Set<String> speciesNameFilters,
+            Sort sort,
             Pageable pageable) {
 
+        // search query
+        SimpleHighlightQuery search = new SimpleHighlightQuery();
+
+        // search criterias
         Criteria conditions = createSearchConditions(query);
+        search.addCriteria(conditions);
+
+        // filters
         List<FilterQuery> filterQueries = createFilterQuery(sequences, modNameFilters, speciesNameFilters);
-        HighlightOptions highlightOptions = new HighlightOptions();
-
-        highlightOptions.addField(ClusterFields.HIGHEST_RATIO_PEP_SEQUENCE);
-        highlightOptions.setSimplePrefix(SolrClusterRepository.HIGHLIGHT_PRE_FRAGMENT);
-        highlightOptions.setSimplePostfix(SolrClusterRepository.HIGHLIGHT_POST_FRAGMENT);
-
-        SimpleHighlightQuery search = new SimpleHighlightQuery(conditions);
         if (filterQueries != null && !filterQueries.isEmpty()) {
             for (FilterQuery filterQuery : filterQueries) {
                 search.addFilterQuery(filterQuery);
             }
 
         }
+
+        // result highlighting options
+        HighlightOptions highlightOptions = new HighlightOptions();
+        highlightOptions.addField(ClusterFields.HIGHEST_RATIO_PEP_SEQUENCE);
+        highlightOptions.setSimplePrefix(SolrClusterRepository.HIGHLIGHT_PRE_FRAGMENT);
+        highlightOptions.setSimplePostfix(SolrClusterRepository.HIGHLIGHT_POST_FRAGMENT);
         search.setHighlightOptions(highlightOptions);
+
+        // sorting
+        if (sort != null) {
+            search.addSort(sort);
+        } else {
+            search.addSort(DEFAULT_QUERY_SORT);
+        }
+
+        // pagination
         search.setPageRequest(pageable);
 
 
@@ -64,20 +88,29 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
             Set<String> modNameFilters,
             Set<String> speciesNameFilters) {
 
-        Criteria conditions = createSearchConditions(query);
-        List<FilterQuery> filterQueries = createFilterQuery(sequenceFilters, modNameFilters, speciesNameFilters);
-        FacetOptions facetOptions = new FacetOptions(ClusterFields.MOD_SYNONYMS, ClusterFields.SPECIES_NAMES);
-        facetOptions.setFacetLimit(FACET_MIN_COUNT);
+        // search query
+        SimpleFacetQuery search = new SimpleFacetQuery();
 
-        SimpleFacetQuery search = new SimpleFacetQuery(conditions);
+        // searhc criteria
+        Criteria conditions = createSearchConditions(query);
+        search.addCriteria(conditions);
+
+        // filtering
+        List<FilterQuery> filterQueries = createFilterQuery(sequenceFilters, modNameFilters, speciesNameFilters);
         if (filterQueries != null && !filterQueries.isEmpty()) {
             for (FilterQuery filterQuery : filterQueries) {
                 search.addFilterQuery(filterQuery);
             }
-
         }
+
+        // facet
+        FacetOptions facetOptions = new FacetOptions(ClusterFields.MOD_SYNONYMS, ClusterFields.SPECIES_NAMES);
+        facetOptions.setFacetLimit(FACET_MIN_COUNT);
         search.setFacetOptions(facetOptions);
-        search.setPageRequest(new PageRequest(0, 1)); //We are only interesting in the facets, not in the query result
+
+        // turn off pagination
+        //We are only interesting in the facets, not in the query result
+        search.setPageRequest(new PageRequest(0, 1));
 
         return solrTemplate.queryForFacetPage(search, SolrCluster.class);
     }
@@ -106,7 +139,9 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
         return conditions;
     }
 
-    private List<FilterQuery> createFilterQuery(Set<String> sequences, Set<String> modNameFilters, Set<String> speciesNameFilters) {
+    private List<FilterQuery> createFilterQuery(Set<String> sequences,
+                                                Set<String> modNameFilters,
+                                                Set<String> speciesNameFilters) {
         List<FilterQuery> filterQueries = new ArrayList<FilterQuery>();
 
         //Sequences filter

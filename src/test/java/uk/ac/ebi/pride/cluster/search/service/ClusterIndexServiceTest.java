@@ -176,7 +176,7 @@ public class ClusterIndexServiceTest {
 
         PageWrapper<SolrCluster> highlightPage =
                 clusterSearchService.findByTextAndHighestRatioPepSequencesHighlightsFilterOnModificationNamesAndSpeciesNames(
-                        PEP1, null, null, null, new PageRequest(0, 10));
+                        PEP1, null, null, null, null, new PageRequest(0, 10));
 
         assertNotNull(highlightPage);
         assertEquals(1, highlightPage.getHighlights().size());
@@ -195,9 +195,9 @@ public class ClusterIndexServiceTest {
                 PEP1, null, null, null);
 
         assertNotNull(modificationsCount);
-        assertEquals(2, modificationsCount.get(ClusterFields.MOD_NAMES).size());
-        assertEquals((Long) 1L, modificationsCount.get(ClusterFields.MOD_NAMES).get(MOD_1_NAME));
-        assertEquals((Long) 1L, modificationsCount.get(ClusterFields.MOD_NAMES).get(MOD_2_NAME));
+        assertEquals(2, modificationsCount.get(ClusterFields.MOD_SYNONYMS).size());
+        assertEquals((Long) 1L, modificationsCount.get(ClusterFields.MOD_SYNONYMS).get(MOD_1_SYNONYM));
+        assertEquals((Long) 1L, modificationsCount.get(ClusterFields.MOD_SYNONYMS).get(MOD_2_SYNONYM));
 
     }
 

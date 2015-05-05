@@ -1,6 +1,7 @@
 package uk.ac.ebi.pride.cluster.search.service.repository;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.solr.core.query.result.FacetPage;
 import org.springframework.data.solr.core.query.result.HighlightPage;
 import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
@@ -21,13 +22,16 @@ public interface CustomSolrClusterRepository {
      * @param sequenceFilters (peptide sequences to filter by) optional
      * @param modNameFilters (modification names to filter by) optional
      * @param speciesNameFilters (species names to filter by) optional
-     * @param pageable requested page    @return A page with the clusters and the highlights snippets
+     * @param sort (criterias to sort the results) optional
+     * @param pageable requested page
+     * @return A page with the clusters and the highlights snippets
      */
     HighlightPage<SolrCluster> findByTextAndHighestRatioPepSequencesFilterOnModificationNamesAndSpeciesNames(
             String query,
             Set<String> sequenceFilters,
             Set<String> modNameFilters,
             Set<String> speciesNameFilters,
+            Sort sort,
             Pageable pageable);
 
     /**
