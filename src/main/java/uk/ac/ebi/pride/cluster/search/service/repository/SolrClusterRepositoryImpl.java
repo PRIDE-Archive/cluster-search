@@ -165,7 +165,7 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
                 if (conditions == null) {
                     conditions = new Criteria(field).is(value);
                 } else {
-                    conditions = conditions.or(new Criteria(field).is(value));
+                    conditions = conditions.and(new Criteria(field).is(value));
                 }
             }
 
