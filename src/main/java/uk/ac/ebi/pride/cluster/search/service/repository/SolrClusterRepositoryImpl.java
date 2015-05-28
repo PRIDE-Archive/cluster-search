@@ -26,7 +26,8 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
     public static final int FACET_MIN_COUNT = 10000;
 
     // default sorting for the query results
-    public static final Sort DEFAULT_QUERY_SORT = new Sort(Sort.Direction.DESC, ClusterFields.NUMBER_OF_SPECTRA)
+    public static final Sort DEFAULT_QUERY_SORT = new Sort(Sort.Direction.DESC, ClusterFields.HIGHEST_RATIO_PEP_SEQUENCE)
+                                                        .and(new Sort(Sort.Direction.DESC, ClusterFields.NUMBER_OF_SPECTRA))
                                                         .and(new Sort(Sort.Direction.DESC, ClusterFields.MAX_RATIO))
                                                         .and(new Sort(Sort.Direction.DESC, ClusterFields.NUMBER_OF_PROJECTS));
 
