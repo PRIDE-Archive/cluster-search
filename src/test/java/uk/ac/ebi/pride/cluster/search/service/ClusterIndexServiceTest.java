@@ -235,8 +235,6 @@ public class ClusterIndexServiceTest {
 
     private SolrCluster createCluster(long clusterId, double precursorMz, double[] mzValues, double[] intensityValues) {
 
-        List<String> pepSequences = new LinkedList<String>();
-        Collections.addAll(pepSequences, PEP1, PEP2);
         List<String> proteinAccs = new LinkedList<String>();
         Collections.addAll(proteinAccs, PROT1, PROT2);
 
@@ -249,7 +247,7 @@ public class ClusterIndexServiceTest {
         SolrCluster cluster = new SolrCluster();
         cluster.setId(clusterId);
         cluster.setClusterQuality("HIGH");
-        cluster.setHighestRatioPepSequences(pepSequences);
+        cluster.setHighestRatioPepSequence(PEP1);
         cluster.setHighestRatioProteinAccessions(proteinAccs);
 
         Modification mod1 = new Modification();
@@ -288,8 +286,6 @@ public class ClusterIndexServiceTest {
 
     private void checkCluster(long clusterId, double avgPrecursorMz,SolrCluster cluster) {
 
-        List<String> pepSequences = new LinkedList<String>();
-        Collections.addAll(pepSequences, PEP1, PEP2);
         List<String> proteinAccs = new LinkedList<String>();
         Collections.addAll(proteinAccs, PROT1, PROT2);
 
@@ -304,7 +300,7 @@ public class ClusterIndexServiceTest {
         assertEquals(MAX_RATIO, cluster.getMaxRatio(), 0);
         assertEquals(NUM_SPECTRA, cluster.getNumberOfSpectra());
         assertEquals("HIGH", cluster.getClusterQuality());
-        assertEquals(pepSequences, cluster.getHighestRatioPepSequences());
+        assertEquals(PEP1, cluster.getHighestRatioPepSequence());
         assertEquals(AVG_PRECURSOR_CHARGE, cluster.getAveragePrecursorCharge(), 0);
         assertEquals(avgPrecursorMz, cluster.getAveragePrecursorMz(), 0);
         assertEquals(proteinAccs, cluster.getHighestRatioProteinAccessions());

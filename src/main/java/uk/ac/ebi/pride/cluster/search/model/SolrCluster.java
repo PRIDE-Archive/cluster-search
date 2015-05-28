@@ -21,7 +21,7 @@ public class SolrCluster {
     private long id;
 
     @Field(HIGHEST_RATIO_PEP_SEQUENCE)
-    private List<String> highestRatioPepSequences;
+    private String highestRatioPepSequence;
 
     @Field(HIGHEST_RATIO_PROTEIN_ACCESSION)
     private List<String> highestRatioProteinAccessions;
@@ -185,12 +185,12 @@ public class SolrCluster {
         this.totalNumberOfModifications = totalNumberOfModifications;
     }
 
-    public List<String> getHighestRatioPepSequences() {
-        return highestRatioPepSequences;
+    public String getHighestRatioPepSequence() {
+        return highestRatioPepSequence;
     }
 
-    public void setHighestRatioPepSequences(List<String> highestRatioPepSequences) {
-        this.highestRatioPepSequences = highestRatioPepSequences;
+    public void setHighestRatioPepSequence(String highestRatioPepSequence) {
+        this.highestRatioPepSequence = highestRatioPepSequence;
     }
 
     public List<String> getHighestRatioProteinAccessions() {
