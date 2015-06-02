@@ -10,6 +10,7 @@ public class ClusterFields {
     public static final String ID = "id";
     public static final String HIGHEST_RATIO_PROTEIN_ACCESSION = "highest_ratio_protein_accessions";
     public static final String HIGHEST_RATIO_PEP_SEQUENCE = "highest_ratio_pep_sequence";
+    public static final String HIGHEST_RATIO_PEP_SEQUENCE_SORT = "highest_ratio_pep_sequence_sort";
     public static final String NUMBER_OF_SPECTRA = "num_spectra";
     public static final String TOTAL_NUMBER_OF_SPECTRA = "total_num_spectra";
     public static final String NUMBER_OF_PROJECTS = "num_projects";

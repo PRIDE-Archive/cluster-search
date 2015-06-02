@@ -100,6 +100,7 @@
         <!-- identifier for each document: the cluster id -->
         <field name="id" type="long" indexed="true" stored="true" required="true" multiValued="false"/>
         <field name="highest_ratio_pep_sequence" type="text_seq" indexed="true" stored="true" required="true" multiValued="false"/>
+        <field name="highest_ratio_pep_sequence_sort" type="string" indexed="true" stored="false" required="true" multiValued="false"/>
         <field name="highest_ratio_protein_accessions" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
 
         <!-- numbers about a cluster -->
@@ -243,6 +244,7 @@
 
     <copyField source="id" dest="text" />
     <copyField source="project_assays" dest="text" />
+    <copyField source="highest_ratio_pep_sequence" dest="highest_ratio_pep_sequence_sort"/>
     <copyField source="cluster_quality" dest="text" />
     <copyField source="highest_ratio_pep_sequence" dest="text" />
     <copyField source="highest_ratio_protein_accessions" dest="text" />

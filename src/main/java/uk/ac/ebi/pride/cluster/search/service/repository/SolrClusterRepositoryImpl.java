@@ -26,10 +26,14 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
     public static final int FACET_MIN_COUNT = 10000;
 
     // default sorting for the query results
-    public static final Sort DEFAULT_QUERY_SORT = new Sort(Sort.Direction.DESC, ClusterFields.HIGHEST_RATIO_PEP_SEQUENCE)
+    public static final Sort DEFAULT_QUERY_SORT_WITH_QUERY = new Sort(Sort.Direction.DESC, ClusterFields.HIGHEST_RATIO_PEP_SEQUENCE_SORT)
                                                         .and(new Sort(Sort.Direction.DESC, ClusterFields.NUMBER_OF_SPECTRA))
                                                         .and(new Sort(Sort.Direction.DESC, ClusterFields.MAX_RATIO))
                                                         .and(new Sort(Sort.Direction.DESC, ClusterFields.NUMBER_OF_PROJECTS));
+
+    public static final Sort DEFAULT_QUERY_SORT_WITHOUT_QUERY = new Sort(Sort.Direction.DESC, ClusterFields.NUMBER_OF_SPECTRA)
+                                                                .and(new Sort(Sort.Direction.DESC, ClusterFields.MAX_RATIO))
+                                                                .and(new Sort(Sort.Direction.DESC, ClusterFields.NUMBER_OF_PROJECTS));
 
     private SolrTemplate solrTemplate;
 
@@ -73,7 +77,11 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
         if (sort != null) {
             search.addSort(sort);
         } else {
-            search.addSort(DEFAULT_QUERY_SORT);
+            if (query == null || query.length() == 0) {
+                search.addSort(DEFAULT_QUERY_SORT_WITHOUT_QUERY);
+            } else {
+                search.addSort(DEFAULT_QUERY_SORT_WITH_QUERY);
+            }
         }
 
         // pagination
