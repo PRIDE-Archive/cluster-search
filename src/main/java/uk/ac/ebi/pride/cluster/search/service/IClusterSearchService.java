@@ -32,7 +32,7 @@ public interface IClusterSearchService {
      * @param pageable requested page
      * @return A page with the clusters and the highlights snippets
      */
-    PageWrapper<SolrCluster> findByTextAndHighestRatioPepSequencesHighlightsFilterOnModificationNamesAndSpeciesNames(
+    PageWrapper<SolrCluster> findClusterByQuery(
             String query,
             Set<String> sequenceFilters,
             Set<String> modNameFilters,
@@ -48,7 +48,7 @@ public interface IClusterSearchService {
      * @param speciesNameFilters (species names to filter by) optional
      * @return a map per facet field with the names and the number of hits per name
      */
-    Map<String, Map<String, Long>> findByTextAndHighestRatioPepSequencesFacetOnModificationNamesAndSpeciesNames(
+    Map<String, Map<String, Long>> findClusterFacetByQuery(
             String query,
             Set<String> sequenceFilters,
             Set<String> modNameFilters,

@@ -50,7 +50,7 @@ public class ClusterSearchService implements IClusterSearchService {
     }
 
     @Override
-    public PageWrapper<SolrCluster> findByTextAndHighestRatioPepSequencesHighlightsFilterOnModificationNamesAndSpeciesNames(
+    public PageWrapper<SolrCluster> findClusterByQuery(
             String query,
             Set<String> sequenceFilters,
             Set<String> modNameFilters,
@@ -58,7 +58,7 @@ public class ClusterSearchService implements IClusterSearchService {
             Sort sort,
             Pageable pageable) {
 
-        return new PageWrapper<SolrCluster>(solrClusterRepository.findByTextAndHighestRatioPepSequencesFilterOnModificationNamesAndSpeciesNames(
+        return new PageWrapper<SolrCluster>(solrClusterRepository.findClusterWithScore(
                 query,
                 sequenceFilters,
                 modNameFilters,
@@ -69,7 +69,7 @@ public class ClusterSearchService implements IClusterSearchService {
     }
 
     @Override
-    public Map<String, Map<String, Long>> findByTextAndHighestRatioPepSequencesFacetOnModificationNamesAndSpeciesNames(
+    public Map<String, Map<String, Long>> findClusterFacetByQuery(
             String query,
             Set<String> sequenceFilters,
             Set<String> modNameFilters,
@@ -77,7 +77,7 @@ public class ClusterSearchService implements IClusterSearchService {
 
         Map<String, Map<String, Long>> facets = new HashMap<String, Map<String, Long>>();
 
-        FacetPage<SolrCluster> clusters = solrClusterRepository.findByTextAndHighestRatioPepSequencesFacetOnModificationNamesAndSpeciesNames(
+        FacetPage<SolrCluster> clusters = solrClusterRepository.findClusterWithFacet(
                 query,
                 sequenceFilters,
                 modNameFilters,

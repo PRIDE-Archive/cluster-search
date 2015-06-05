@@ -29,8 +29,6 @@ import java.io.IOException;
 import java.util.*;
 
 import static junit.framework.Assert.*;
-import static uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepository.HIGHLIGHT_POST_FRAGMENT;
-import static uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterRepository.HIGHLIGHT_PRE_FRAGMENT;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:test-config.xml")
@@ -175,13 +173,12 @@ public class ClusterIndexServiceTest {
         save(cluster1);
 
         PageWrapper<SolrCluster> highlightPage =
-                clusterSearchService.findByTextAndHighestRatioPepSequencesHighlightsFilterOnModificationNamesAndSpeciesNames(
+                clusterSearchService.findClusterByQuery(
                         PEP1, null, null, null, null, new PageRequest(0, 10));
 
         assertNotNull(highlightPage);
-        assertEquals(1, highlightPage.getHighlights().size());
-        assertEquals(ClusterFields.HIGHEST_RATIO_PEP_SEQUENCE, highlightPage.getHighlights().entrySet().iterator().next().getValue().entrySet().iterator().next().getKey());
-        assertEquals(HIGHLIGHT_PRE_FRAGMENT + PEP1 + HIGHLIGHT_POST_FRAGMENT, highlightPage.getHighlights().entrySet().iterator().next().getValue().entrySet().iterator().next().getValue().get(0));
+//        assertEquals(ClusterFields.HIGHEST_RATIO_PEP_SEQUENCE, highlightPage.getHighlights().entrySet().iterator().next().getValue().entrySet().iterator().next().getKey());
+//        assertEquals(HIGHLIGHT_PRE_FRAGMENT + PEP1 + HIGHLIGHT_POST_FRAGMENT, highlightPage.getHighlights().entrySet().iterator().next().getValue().entrySet().iterator().next().getValue().get(0));
     }
 
     @Test
@@ -191,7 +188,7 @@ public class ClusterIndexServiceTest {
         SolrCluster cluster1 = createCluster(CLUSTER_ID_1, AVG_PRECURSOR_MZ_1, createMzValuesSet1(), createIntensityValuesSet1());
         save(cluster1);
 
-        Map<String, Map<String, Long>> modificationsCount = clusterSearchService.findByTextAndHighestRatioPepSequencesFacetOnModificationNamesAndSpeciesNames(
+        Map<String, Map<String, Long>> modificationsCount = clusterSearchService.findClusterFacetByQuery(
                 PEP1, null, null, null);
 
         assertNotNull(modificationsCount);

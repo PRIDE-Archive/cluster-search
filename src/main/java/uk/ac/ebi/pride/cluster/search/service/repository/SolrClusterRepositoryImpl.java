@@ -7,6 +7,7 @@ import org.springframework.data.solr.core.SolrTemplate;
 import org.springframework.data.solr.core.query.*;
 import org.springframework.data.solr.core.query.result.FacetPage;
 import org.springframework.data.solr.core.query.result.HighlightPage;
+import org.springframework.data.solr.core.query.result.ScoredPage;
 import org.springframework.stereotype.Repository;
 import uk.ac.ebi.pride.cluster.search.model.ClusterFields;
 import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
@@ -42,7 +43,7 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
         this.solrTemplate = solrTemplate;
     }
 
-    public HighlightPage<SolrCluster> findByTextAndHighestRatioPepSequencesFilterOnModificationNamesAndSpeciesNames(
+    public HighlightPage<SolrCluster> findClusterWithHighlight(
             String query,
             Set<String> sequences,
             Set<String> modNameFilters,
@@ -91,7 +92,47 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
         return solrTemplate.queryForHighlightPage(search, SolrCluster.class);
     }
 
-    public FacetPage<SolrCluster> findByTextAndHighestRatioPepSequencesFacetOnModificationNamesAndSpeciesNames(
+    @Override
+    public ScoredPage<SolrCluster> findClusterWithScore(String query,
+                                                        Set<String> sequenceFilters,
+                                                        Set<String> modNameFilters,
+                                                        Set<String> speciesNameFilters,
+                                                        Sort sort,
+                                                        Pageable pageable) {
+        // search query
+        SimpleQuery search = new SimpleQuery();
+
+        // search criterias
+        Criteria conditions = createSearchConditions(query);
+        search.addCriteria(conditions);
+
+        // filters
+        List<FilterQuery> filterQueries = createFilterQuery(sequenceFilters, modNameFilters, speciesNameFilters);
+        if (filterQueries != null && !filterQueries.isEmpty()) {
+            for (FilterQuery filterQuery : filterQueries) {
+                search.addFilterQuery(filterQuery);
+            }
+
+        }
+
+        // sorting
+        if (sort != null) {
+            search.addSort(sort);
+        } else {
+            if (query == null || query.length() == 0) {
+                search.addSort(DEFAULT_QUERY_SORT_WITHOUT_QUERY);
+            } else {
+                search.addSort(DEFAULT_QUERY_SORT_WITH_QUERY);
+            }
+        }
+
+        // pagination
+        search.setPageRequest(pageable);
+
+        return solrTemplate.queryForPage(search, SolrCluster.class);
+    }
+
+    public FacetPage<SolrCluster> findClusterWithFacet(
             String query,
             Set<String> sequenceFilters,
             Set<String> modNameFilters,
@@ -142,7 +183,7 @@ public class SolrClusterRepositoryImpl implements CustomSolrClusterRepository {
             }
         } else {
             //Default Criteria
-            conditions = new Criteria(ClusterFields.TEXT).or(new Criteria(ClusterFields.HIGHEST_RATIO_PEP_SEQUENCE));
+            conditions = new Criteria(Criteria.WILDCARD).expression(Criteria.WILDCARD);
         }
 
         return conditions;
