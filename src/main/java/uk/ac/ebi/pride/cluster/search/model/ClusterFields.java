@@ -29,13 +29,13 @@ public class ClusterFields {
     public static final String SPECIES_ACCESSIONS = "species_accessions";
     public static final String SPECIES_ASCENDANTS_NAMES = "species_ascendants_names";
     public static final String SPECIES_ASCENDANTS_ACCESSIONS = "species_ascendants_accessions";
-    public static final String SPECIES_NAMES_AS_TEXT = "species_as_text";
-    public static final String SPECIES_ASCENDANTS_NAMES_AS_TEXT = "species_ascendants_as_text";
+//    public static final String SPECIES_NAMES_AS_TEXT = "species_as_text";
+//    public static final String SPECIES_ASCENDANTS_NAMES_AS_TEXT = "species_ascendants_as_text";
     public static final String MODIFICATIONS = "modifications";
     public static final String MOD_NAMES = "mod_names";
-    public static final String MOD_NAMES_AS_TEXT = "mod_names_as_text";
+//    public static final String MOD_NAMES_AS_TEXT = "mod_names_as_text";
     public static final String MOD_ACCESSIONS = "mod_accessions";
-    public static final String MOD_ACCESSIONS_AS_TEXT = "mod_accessions_as_text";
+//    public static final String MOD_ACCESSIONS_AS_TEXT = "mod_accessions_as_text";
     public static final String MOD_SYNONYMS = "mod_synonyms";
     public static final String CONSENSUS_SPECTRUM_MZ = "consensus_spectrum_mz";
     public static final String CONSENSUS_SPECTRUM_MZ_MEAN = "consensus_spectrum_mz_mean_*";
