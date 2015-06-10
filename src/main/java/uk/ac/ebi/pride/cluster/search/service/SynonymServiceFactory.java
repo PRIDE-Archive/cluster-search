@@ -38,7 +38,7 @@ public class SynonymServiceFactory {
                             syns = new HashSet<String>();
                             synonyms.put(token.trim(), syns);
                         }
-                        syns.add(parts[1]);
+                        syns.add(parts[1].trim());
                     }
                 }
             }
