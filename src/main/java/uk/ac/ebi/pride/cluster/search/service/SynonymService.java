@@ -19,7 +19,7 @@ public class SynonymService implements ISynonymService {
     @Override
     public Set<String> getSynonyms(String accession) {
         Set<String> synonyms = synonymMapper.get(accession);
-        return Collections.unmodifiableSet(synonyms);
+        return synonyms == null ? Collections.EMPTY_SET : Collections.unmodifiableSet(synonyms);
     }
 
     @Override
