@@ -19,7 +19,6 @@ import org.springframework.data.solr.core.query.SimpleStringCriteria;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.pride.archive.dataprovider.identification.ModificationProvider;
-import uk.ac.ebi.pride.cluster.search.model.ClusterFields;
 import uk.ac.ebi.pride.cluster.search.model.SolrCluster;
 import uk.ac.ebi.pride.cluster.search.service.repository.SolrClusterSpectralSearchRepository;
 import uk.ac.ebi.pride.indexutils.modifications.Modification;
@@ -192,10 +191,6 @@ public class ClusterIndexServiceTest {
                 PEP1, null, null, null);
 
         assertNotNull(modificationsCount);
-        assertEquals(2, modificationsCount.get(ClusterFields.MOD_SYNONYMS).size());
-        assertEquals((Long) 1L, modificationsCount.get(ClusterFields.MOD_SYNONYMS).get(MOD_1_SYNONYM));
-        assertEquals((Long) 1L, modificationsCount.get(ClusterFields.MOD_SYNONYMS).get(MOD_2_SYNONYM));
-
     }
 
 

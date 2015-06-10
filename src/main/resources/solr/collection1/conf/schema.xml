@@ -146,7 +146,7 @@
         <!--<field name="mod_names_as_text" type="text_general" indexed="true" stored="false" required="false" multiValued="true"/>-->
         <field name="mod_accessions" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
         <!--<field name="mod_accessions_as_text" type="text_general" indexed="true" stored="false" required="false" multiValued="true"/>-->
-        <field name="mod_synonyms" type="text_synonym" indexed="true" stored="true" required="false" multiValued="true"/>
+        <field name="mod_synonyms" type="string" indexed="true" stored="true" required="false" multiValued="true"/>
 
         <!-- catchall field, containing all other searchable text fields (implemented
              via copyField further on in this schema  -->
@@ -263,7 +263,6 @@
     <copyField source="species_ascendants_names" dest="text"/>
 
     <!--<copyField source="mod_accessions" dest="mod_accessions_as_text" />-->
-    <copyField source="mod_accessions" dest="mod_synonyms" />
     <copyField source="mod_synonyms" dest="text" />
     <!--<copyField source="mod_names" dest="mod_names_as_text" />-->
 

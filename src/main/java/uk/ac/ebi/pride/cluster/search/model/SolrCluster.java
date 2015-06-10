@@ -11,7 +11,6 @@ import static uk.ac.ebi.pride.cluster.search.model.ClusterFields.*;
 /**
  * @author ntoro
  * @author Jose A. Dianes <jdianes@ebi.ac.uk>
- *
  */
 public class SolrCluster {
 
@@ -87,6 +86,9 @@ public class SolrCluster {
 
     @Field(MOD_NAMES)
     private List<String> modificationNames;
+
+    @Field(MOD_SYNONYMS)
+    private List<String> modificationSynonyms;
 
     @Field(MOD_ACCESSIONS)
     private List<String> modificationAccessions;
@@ -248,7 +250,7 @@ public class SolrCluster {
         String[] tokens;
         for (String list : projectAssaysList) {
             tokens = list.trim().split(ASSAYS_DELIMITEER);
-            if(tokens.length >= 2){
+            if (tokens.length >= 2) {
                 projectAssays.put(tokens[0], Arrays.asList(Arrays.copyOfRange(tokens, 1, tokens.length)));
             }
         }
@@ -257,7 +259,7 @@ public class SolrCluster {
     }
 
     public void setProjectAssays(Map<String, List<String>> projectAssays) {
-        if(projectAssaysList == null ){
+        if (projectAssaysList == null) {
             projectAssaysList = new ArrayList<String>();
         }
         for (String projectAccession : projectAssays.keySet()) {
@@ -303,60 +305,67 @@ public class SolrCluster {
 
     public Iterable<ModificationProvider> getModifications() {
 
-            List<ModificationProvider> modifications = new ArrayList<ModificationProvider>();
+        List<ModificationProvider> modifications = new ArrayList<ModificationProvider>();
 
-            if (modificationsAsString != null) {
-                for (String mod : modificationsAsString) {
-                    if(!mod.isEmpty()) {
-                        modifications.add(ModificationHelper.convertFromString(mod));
-                    }
+        if (modificationsAsString != null) {
+            for (String mod : modificationsAsString) {
+                if (!mod.isEmpty()) {
+                    modifications.add(ModificationHelper.convertFromString(mod));
                 }
             }
-
-            return modifications;
         }
 
-        public void setModifications(List<ModificationProvider> modifications) {
+        return modifications;
+    }
 
-            if (modifications == null )
-                return;
+    public void setModifications(List<ModificationProvider> modifications) {
 
-            List<String> modificationsAsString = new ArrayList<String>();
-            List<String> modificationNames = new ArrayList<String>();
-            List<String> modificationAccessions = new ArrayList<String>();
+        if (modifications == null)
+            return;
 
-            for (ModificationProvider modification : modifications) {
-                modificationsAsString.add(ModificationHelper.convertToString(modification));
-                modificationAccessions.add(modification.getAccession());
-                modificationNames.add(modification.getName());
-            }
+        List<String> modificationsAsString = new ArrayList<String>();
+        List<String> modificationNames = new ArrayList<String>();
+        List<String> modificationAccessions = new ArrayList<String>();
 
-            this.modificationsAsString = modificationsAsString;
-            this.modificationAccessions = modificationAccessions;
-            this.modificationNames = modificationNames;
+        for (ModificationProvider modification : modifications) {
+            modificationsAsString.add(ModificationHelper.convertToString(modification));
+            modificationAccessions.add(modification.getAccession());
+            modificationNames.add(modification.getName());
         }
 
-        public void addModification(ModificationProvider modification) {
+        this.modificationsAsString = modificationsAsString;
+        this.modificationAccessions = modificationAccessions;
+        this.modificationNames = modificationNames;
+    }
 
-            if (modificationsAsString == null) {
-                modificationsAsString = new ArrayList<String>();
-            }
+    public void addModification(ModificationProvider modification) {
 
-            if (modificationAccessions == null) {
-                modificationAccessions = new ArrayList<String>();
-            }
-
-            if (modificationNames == null) {
-                modificationNames = new ArrayList<String>();
-            }
-
-            if (modification != null) {
-                modificationsAsString.add(ModificationHelper.convertToString(modification));
-                modificationAccessions.add(modification.getAccession());
-                modificationNames.add(modification.getName());
-            }
+        if (modificationsAsString == null) {
+            modificationsAsString = new ArrayList<String>();
         }
 
+        if (modificationAccessions == null) {
+            modificationAccessions = new ArrayList<String>();
+        }
+
+        if (modificationNames == null) {
+            modificationNames = new ArrayList<String>();
+        }
+
+        if (modification != null) {
+            modificationsAsString.add(ModificationHelper.convertToString(modification));
+            modificationAccessions.add(modification.getAccession());
+            modificationNames.add(modification.getName());
+        }
+    }
+
+    public List<String> getModificationSynonyms() {
+        return modificationSynonyms;
+    }
+
+    public void setModificationSynonyms(List<String> modificationSynonyms) {
+        this.modificationSynonyms = modificationSynonyms;
+    }
 
     public List<Double> getConsensusSpectrumMz() {
         return consensusSpectrumMz;
@@ -370,7 +379,7 @@ public class SolrCluster {
         double[] res = new double[this.consensusSpectrumMzMeans.size()];
 
         Iterator<Double> it = this.consensusSpectrumMzMeans.values().iterator();
-        int i=0;
+        int i = 0;
         while (it.hasNext()) {
             res[i] = it.next();
             i++;
@@ -383,7 +392,7 @@ public class SolrCluster {
         if (consensusSpectrumMzMeans != null) {
             for (int i = 0; i < consensusSpectrumMzMeans.length; i++) {
                 this.consensusSpectrumMzMeans.put(
-                        ClusterFields.CONSENSUS_SPECTRUM_MZ_MEAN.replace("*", ""+i),
+                        ClusterFields.CONSENSUS_SPECTRUM_MZ_MEAN.replace("*", "" + i),
                         consensusSpectrumMzMeans[i]
                 );
             }
@@ -411,7 +420,7 @@ public class SolrCluster {
         double[] res = new double[this.consensusSpectrumIntensityMeans.size()];
 
         Iterator<Double> it = this.consensusSpectrumIntensityMeans.values().iterator();
-        int i=0;
+        int i = 0;
         while (it.hasNext()) {
             res[i] = it.next();
             i++;
@@ -424,7 +433,7 @@ public class SolrCluster {
         if (consensusSpectrumIntensityMeans != null) {
             for (int i = 0; i < consensusSpectrumIntensityMeans.length; i++) {
                 this.consensusSpectrumIntensityMeans.put(
-                        ClusterFields.CONSENSUS_SPECTRUM_INTENSITY_MEAN.replace("*", ""+i),
+                        ClusterFields.CONSENSUS_SPECTRUM_INTENSITY_MEAN.replace("*", "" + i),
                         consensusSpectrumIntensityMeans[i]
                 );
             }
